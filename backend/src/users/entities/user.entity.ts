@@ -1,0 +1,18 @@
+import { CakeDebt } from "src/cakes/entities/cake-debt.entity";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+
+@Entity()
+export class User{
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @Column()
+    email: string;
+
+    @OneToMany(()=>CakeDebt, (cakeDebt)=> cakeDebt.user)
+    cakeDebts: CakeDebt[];
+
+}
