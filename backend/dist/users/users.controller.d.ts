@@ -1,4 +1,4 @@
-import { UsersService } from "./users.service";
+import { UsersService } from './users.service';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
@@ -6,5 +6,5 @@ export declare class UsersController {
     create(body: {
         name: string;
         email: string;
-    }): Promise<import("./entities/user.entity").User>;
+    }, photo?: Express.Multer.File): Promise<import("./entities/user.entity").User>;
 }

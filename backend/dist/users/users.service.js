@@ -25,8 +25,8 @@ let UsersService = class UsersService {
     async findAll() {
         return this.usersRepository.find();
     }
-    async create(name, email) {
-        const user = this.usersRepository.create({ name, email });
+    async create(name, email, photo) {
+        const user = this.usersRepository.create({ name, email, photo });
         return this.usersRepository.save(user);
     }
     async findOne(id) {

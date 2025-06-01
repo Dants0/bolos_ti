@@ -9,4 +9,5 @@ export declare class CakesService {
     findAll(): Promise<CakeDebt[]>;
     markAsPaid(id: number): Promise<CakeDebt>;
     findByUserId(userId: number): Promise<CakeDebt[]>;
+    findUsersPaidCakes(): Promise<CakeDebt[]>;
 }

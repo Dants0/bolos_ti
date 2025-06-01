@@ -14,6 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
+const path_1 = require("path");
 const users_service_1 = require("./users.service");
 let UsersController = class UsersController {
     usersService;
@@ -23,8 +26,9 @@ let UsersController = class UsersController {
     async findAll() {
         return this.usersService.findAll();
     }
-    async create(body) {
-        return this.usersService.create(body.name, body.email);
+    async create(body, photo) {
+        const photoPath = photo ? `uploads/${photo.filename}` : undefined;
+        return this.usersService.create(body.name, body.email, photoPath);
     }
 };
 exports.UsersController = UsersController;
@@ -36,9 +40,22 @@ __decorate([
 ], UsersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('photo', {
+        storage: (0, multer_1.diskStorage)({
+            destination: (0, path_1.join)(__dirname, '..', '..', 'uploads'),
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = (0, path_1.extname)(file.originalname);
+                cb(null, `photo-${uniqueSuffix}${ext}`);
+            },
+        }),
+    })),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
+        fileIsRequired: false,
+    }))),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "create", null);
 exports.UsersController = UsersController = __decorate([

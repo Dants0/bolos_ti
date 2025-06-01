@@ -3,7 +3,7 @@ import { CakesService } from './cakes.service';
 
 @Controller('cakes')
 export class CakesController {
-  constructor(private readonly cakesService: CakesService) {}
+  constructor(private readonly cakesService: CakesService) { }
 
   @Get()
   async findAll() {
@@ -23,5 +23,10 @@ export class CakesController {
   @Put(':id/pay')
   async markAsPaid(@Param('id') id: string) {
     return this.cakesService.markAsPaid(+id);
+  }
+
+  @Get('/pay')
+  async findCakesPaid() {
+    return this.cakesService.findUsersPaidCakes();
   }
 }

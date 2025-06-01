@@ -16,6 +16,7 @@ let User = class User {
     id;
     name;
     email;
+    photo;
     cakeDebts;
 };
 exports.User = User;
@@ -31,6 +32,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "photo", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => cake_debt_entity_1.CakeDebt, (cakeDebt) => cakeDebt.user),
     __metadata("design:type", Array)

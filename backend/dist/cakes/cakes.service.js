@@ -57,6 +57,19 @@ let CakesService = class CakesService {
         }
         return cakeDebts;
     }
+    async findUsersPaidCakes() {
+        const user = await this.usersService.findAll();
+        const cakeDebts = await this.cakesRepository.find({
+            where: {
+                status: "paid"
+            },
+            relations: ['user']
+        });
+        if (!user) {
+            throw new Error("Usuário não possui bólos!");
+        }
+        return cakeDebts;
+    }
 };
 exports.CakesService = CakesService;
 exports.CakesService = CakesService = __decorate([
