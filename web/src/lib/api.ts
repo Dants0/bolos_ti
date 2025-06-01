@@ -42,3 +42,10 @@ export const getQtdCakeAsPaid = async () => {
   const response = await api.get<CakeDebt[]>(`/cakes/pay`); // Assuming it returns CakeDebt[]
   return response.data;
 };
+
+export const getUsersMaxPendingCakes = async () => {
+  const response = await api.get<{ user: User | any; pendingCount: number; debts: CakeDebt[] }[]>(
+    '/cakes/max-pending',
+  );
+  return response.data || null; // Return null if no data
+};

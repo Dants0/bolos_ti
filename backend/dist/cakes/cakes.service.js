@@ -70,6 +70,23 @@ let CakesService = class CakesService {
         }
         return cakeDebts;
     }
+    async findUsersMaxPendingCakes() {
+        const result = await this.cakesRepository
+            .createQueryBuilder('cake_debt')
+            .select('cake_debt.userId', 'userId')
+            .addSelect('user.name', 'name')
+            .addSelect('COUNT(*)', 'status')
+            .innerJoin('cake_debt.user', 'user')
+            .where('cake_debt.status = :status', { status: 'pending' })
+            .groupBy('cake_debt.userId')
+            .addGroupBy('user.name')
+            .orderBy('status', 'DESC')
+            .getRawMany();
+        if (result.length === 0) {
+            throw new Error("Nenhum usuário com bolos pendentes encontrados!");
+        }
+        return result;
+    }
 };
 exports.CakesService = CakesService;
 exports.CakesService = CakesService = __decorate([

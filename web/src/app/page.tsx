@@ -3,15 +3,18 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { listUsers, getCakes, getQtdCakeAsPaid } from '@/lib/api';
+import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPendingCakes } from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
+import { User } from '@/types/user';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [currentTime, setCurrentTime] = useState(new Date());
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [qtdBolosPaid, setQtdBolosPaid] = useState<number>(0);
   const [qtdBolosDevidos, setQtdBolosDevidos] = useState<number>(0);
   const [qtdUsers, setQtdUsers] = useState<number>(0);
+  const [userBest, setUserBest] = useState<User | any>();
+
 
   useEffect(() => {
     // Fetch all data
@@ -29,6 +32,11 @@ export default function Home() {
         // Fetch paid cakes
         const paidCakes = await getQtdCakeAsPaid();
         setQtdBolosPaid(paidCakes.length);
+
+        const userB = await getUsersMaxPendingCakes();
+        console.log(userB)
+        setUserBest(userB)
+
       } catch (error) {
         toast.error('Erro ao carregar estatísticas 😞');
       }
@@ -53,58 +61,24 @@ export default function Home() {
     };
   }, []);
 
+  // Example stats array, updated to use the new structure
+
+  // console.log(userBest)
   const stats = [
     { label: 'Bolos Pagos', value: qtdBolosPaid.toString(), icon: '🐛' },
     { label: 'Bolos Devidos', value: qtdBolosDevidos.toString(), icon: '🍰' },
     { label: 'Colaboradores', value: qtdUsers.toString(), icon: '👨‍💻' },
-    { label: 'Uptime', value: '99.9%', icon: '⚡' },
+    {
+      label: 'Maior Devedor',
+      value: userBest ? userBest[0].name : 'Nenhum',
+      icon: '🏆',
+    },
   ];
+
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gray-900">
-      {/* Background Matrix-like effect */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900"></div>
 
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-20">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
-              `,
-              backgroundSize: '50px 50px',
-            }}
-          ></div>
-        </div>
-
-        {/* Moving particles */}
-        <div className="absolute inset-0">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-blue-400 rounded-full animate-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
-              }}
-            ></div>
-          ))}
-        </div>
-
-        {/* Cursor glow effect */}
-        <div
-          className="absolute w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none transition-all duration-300"
-          style={{
-            left: mousePosition.x - 192,
-            top: mousePosition.y - 192,
-          }}
-        ></div>
-      </div>
 
       <div className="relative z-10 container mx-auto px-6 py-12">
         {/* Header with system status */}

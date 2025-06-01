@@ -35,6 +35,9 @@ let CakesController = class CakesController {
     async findCakesPaid() {
         return this.cakesService.findUsersPaidCakes();
     }
+    async findCakesMaxPending() {
+        return this.cakesService.findUsersMaxPendingCakes();
+    }
 };
 exports.CakesController = CakesController;
 __decorate([
@@ -70,6 +73,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], CakesController.prototype, "findCakesPaid", null);
+__decorate([
+    (0, common_1.Get)('/max-pending'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CakesController.prototype, "findCakesMaxPending", null);
 exports.CakesController = CakesController = __decorate([
     (0, common_1.Controller)('cakes'),
     __metadata("design:paramtypes", [cakes_service_1.CakesService])
