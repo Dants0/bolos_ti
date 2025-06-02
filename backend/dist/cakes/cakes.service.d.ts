@@ -14,5 +14,11 @@ export declare class CakesService {
         userId: number;
         userName: string;
         pendingCount: number;
+        message: string;
+    }[]>;
+    findUsersMaxPaidCakes(): Promise<{
+        userId: number;
+        userName: string;
+        paidCount: number;
     }[]>;
 }

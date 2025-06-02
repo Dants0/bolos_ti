@@ -38,7 +38,7 @@ let CakesService = class CakesService {
     async markAsPaid(id) {
         const cakeDebt = await this.cakesRepository.findOneBy({ id });
         if (!cakeDebt)
-            throw new Error("Dívida não encontrada");
+            throw new Error("Bólos não encontrada");
         cakeDebt.status = 'paid';
         return this.cakesRepository.save(cakeDebt);
     }
@@ -82,9 +82,20 @@ let CakesService = class CakesService {
             .addGroupBy('user.name')
             .orderBy('status', 'DESC')
             .getRawMany();
-        if (result.length === 0) {
-            throw new Error("Nenhum usuário com bolos pendentes encontrados!");
-        }
+        return result;
+    }
+    async findUsersMaxPaidCakes() {
+        const result = await this.cakesRepository
+            .createQueryBuilder('cake_debt')
+            .select('cake_debt.userId', 'userId')
+            .addSelect('user.name', 'name')
+            .addSelect('COUNT(*)', 'status')
+            .innerJoin('cake_debt.user', 'user')
+            .where('cake_debt.status = :status', { status: 'paid' })
+            .groupBy('cake_debt.userId')
+            .addGroupBy('user.name')
+            .orderBy('status', 'DESC')
+            .getRawMany();
         return result;
     }
 };

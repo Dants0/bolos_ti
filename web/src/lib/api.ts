@@ -43,9 +43,24 @@ export const getQtdCakeAsPaid = async () => {
   return response.data;
 };
 
-export const getUsersMaxPendingCakes = async () => {
-  const response = await api.get<{ user: User | any; pendingCount: number; debts: CakeDebt[] }[]>(
-    '/cakes/max-pending',
-  );
-  return response.data || null; // Return null if no data
+export interface PendingCakeUser {
+  userId: number;
+  name: string;
+  status: string;
+}
+
+export interface PaidCakeUser {
+  userId: number;
+  name: string;
+  status: string;
+}
+
+export const getUsersMaxPendingCakes = async (): Promise<PendingCakeUser | null> => {
+  const response = await api.get<{ data: PendingCakeUser[] }>('/cakes/max-pending');
+  return response.data.data[0] || null;
+};
+
+export const getUsersMaxPaidCakes = async (): Promise<PaidCakeUser | null> => {
+  const response = await api.get<{ data: PaidCakeUser[] }>('/cakes/max-paid');
+  return response.data.data[0] || null;
 };

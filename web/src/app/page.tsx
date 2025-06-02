@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPendingCakes } from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
+import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPendingCakes, getUsersMaxPaidCakes, PaidCakeUser, PendingCakeUser } from '@/lib/api';
 import { User } from '@/types/user';
 
 export default function Home() {
@@ -13,7 +12,8 @@ export default function Home() {
   const [qtdBolosPaid, setQtdBolosPaid] = useState<number>(0);
   const [qtdBolosDevidos, setQtdBolosDevidos] = useState<number>(0);
   const [qtdUsers, setQtdUsers] = useState<number>(0);
-  const [userBest, setUserBest] = useState<User | any>();
+  const [userBestPending, setUserBestPending] = useState<PendingCakeUser | null>(null);
+  const [userBestPaid, setUserBestPaid] = useState<PaidCakeUser | null>(null);
 
 
   useEffect(() => {
@@ -32,10 +32,6 @@ export default function Home() {
         // Fetch paid cakes
         const paidCakes = await getQtdCakeAsPaid();
         setQtdBolosPaid(paidCakes.length);
-
-        const userB = await getUsersMaxPendingCakes();
-        console.log(userB)
-        setUserBest(userB)
 
       } catch (error) {
         toast.error('Erro ao carregar estatísticas 😞');
@@ -61,20 +57,37 @@ export default function Home() {
     };
   }, []);
 
-  // Example stats array, updated to use the new structure
+  useEffect(() => {
+    const fetchData = async () => {
+      const pending = await getUsersMaxPendingCakes();
+      setUserBestPending(pending);
+      const paid = await getUsersMaxPaidCakes();
+      console.log(paid);
+      setUserBestPaid(paid);
+    };
+    fetchData();
+  }, []);
 
   // console.log(userBest)
   const stats = [
-    { label: 'Bolos Pagos', value: qtdBolosPaid.toString(), icon: '🐛' },
-    { label: 'Bolos Devidos', value: qtdBolosDevidos.toString(), icon: '🍰' },
+    { label: 'Bólos Pagos', value: qtdBolosPaid.toString(), icon: '💲' },
+    { label: 'Bólos Pendentes', value: qtdBolosDevidos.toString(), icon: '🍰' },
     { label: 'Colaboradores', value: qtdUsers.toString(), icon: '👨‍💻' },
+  ];
+
+
+  const maxPaidsAndPending = [
     {
-      label: 'Maior Devedor',
-      value: userBest ? userBest[0].name : 'Nenhum',
+      label: 'Maior Devedor de Bólos',
+      value: userBestPending ? userBestPending.name : 'Ninguém',
+      icon: '🏆',
+    },
+    {
+      label: 'Quem mais pagou bólos?',
+      value: userBestPaid ? userBestPaid.name : 'Ninguém',
       icon: '🏆',
     },
   ];
-
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gray-900">
@@ -119,14 +132,31 @@ export default function Home() {
 
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
             Sistema avançado de <span className="text-blue-400 font-semibold">rastreamento de bólos</span> para o time
-            de TI Labcmi. Monitore <span className='underline'>bombas</span>, <span className='underline'>gambiarras</span> e{' '}
+            de TI Labcmi. Monitore <span className='text-purple-400 font-semibold'>bombas</span>, <span className='text-purple-400 font-semibold'>gambiarras</span> e{' '}
             <span className="text-purple-400 font-semibold">bólos</span> em tempo real.
           </p>
         </div>
 
-        {/* Stats Cards */}
         <div
-          className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          className={`grid grid-cols-2 md:grid-cols-2 gap-6 mb-16 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
+        >
+          {maxPaidsAndPending.map((stat, index) => (
+            <div key={index} className="group relative">
+              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:scale-105">
+                <div className="text-3xl mb-2">{stat.icon}</div>
+                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-sm text-gray-400 font-mono">{stat.label}</div>
+
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-purple-600/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div
+          className={`grid grid-cols-2 md:grid-cols-3 gap-6 mb-16 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
         >
           {stats.map((stat, index) => (

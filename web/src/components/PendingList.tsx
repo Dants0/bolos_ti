@@ -24,7 +24,7 @@ export default function PendingDebtsList() {
   const mutation = useMutation({
     mutationFn: markCakeAsPaid,
     onSuccess: () => {
-      toast.success('Dívida quitada! Bolo entregue! 🎉');
+      toast.success('Bólos quitado! Bolo entregue! 🎉');
       queryClient.invalidateQueries({ queryKey: ['pendingDebts'] });
       queryClient.invalidateQueries({ queryKey: ['cakes'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
@@ -47,11 +47,10 @@ export default function PendingDebtsList() {
   );
   return (
     <div className="min-h-screen relative overflow-hidden bg-gray-900">
-      {/* Background Matrix-like effect */}
+
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900"></div>
 
-        {/* Grid pattern */}
         <div className="absolute inset-0 opacity-20">
           <div
             className="absolute inset-0"
@@ -65,7 +64,6 @@ export default function PendingDebtsList() {
           ></div>
         </div>
 
-        {/* Moving particles */}
         <div className="absolute inset-0">
           {[...Array(10)].map((_, i) => (
             <div
@@ -92,7 +90,7 @@ export default function PendingDebtsList() {
             <div className="relative flex-1">
               <input
                 type="text"
-                placeholder="🔍 Pesquisar dívidas..."
+                placeholder="🔍 Pesquisar pagador de bólos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full p-3 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl text-white placeholder-gray-500 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:border-purple-500/50"
@@ -135,7 +133,7 @@ export default function PendingDebtsList() {
 
               {isLoading ? (
                 <div className="text-center py-12">
-                  <p className="text-xl text-gray-300 font-mono">Carregando dívidas...</p>
+                  <p className="text-xl text-gray-300 font-mono">Carregando Bólos...</p>
                 </div>
               ) : filteredDebts.length === 0 ? (
                 <div className="text-center py-12 space-y-4">
@@ -143,7 +141,7 @@ export default function PendingDebtsList() {
                     <>
                       <div className="text-6xl">🤔</div>
                       <p className="text-xl text-gray-300 font-mono font-semibold">
-                        Nenhuma dívida encontrada para "{searchQuery}"
+                        Nenhum bólos encontrado para "{searchQuery}"
                       </p>
                       <p className="text-gray-400 font-mono">Tente outro termo de pesquisa.</p>
                     </>
@@ -151,7 +149,7 @@ export default function PendingDebtsList() {
                     <>
                       <div className="text-6xl">🎉</div>
                       <p className="text-xl text-gray-300 font-mono font-semibold">
-                        Parabéns! Nenhuma dívida pendente!
+                        Parabéns! Nenhum bólos pendente!
                       </p>
                       <p className="text-gray-400 font-mono">
                         A equipe está se comportando... por enquanto! 😄
@@ -160,36 +158,26 @@ export default function PendingDebtsList() {
                   )}
                 </div>
               ) : (
-                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 space-y-4 pr-2">
                   {filteredDebts.map((debt) => (
                     <div
                       key={debt.id}
-                      className="group/debt relative bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 hover:scale-[1.02]"
+                      className="group/debt relative bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                          {debt.user.photo ? (
-                            <div className="relative">
+
+                          <div className="space-y-2">
                               <Image
                                 src={`http://localhost:8080/${debt.user.photo}`}
                                 alt={debt.user.name}
-                                width={64}
-                                height={64}
-                                className="w-16 h-16 rounded-full object-cover border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300"
+                                width={200}
+                                height={200}
+                                className="rounded-full object-cover border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300"
                                 onError={() =>
                                   toast.error(`Erro ao carregar imagem de ${debt.user.name}`)
                                 }
                               />
-                            </div>
-                          ) : (
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300">
-                              <span className="text-white text-xl font-bold font-mono">
-                                {debt.user.name[0].toUpperCase()}
-                              </span>
-                            </div>
-                          )}
-
-                          <div className="space-y-2">
                             <div className="flex items-center space-x-2">
                               <span className="text-2xl">🧑‍💻</span>
                               <p className="text-white font-bold text-lg font-mono group-hover/debt:text-purple-400 transition-colors">
@@ -214,13 +202,15 @@ export default function PendingDebtsList() {
                             </div>
                           </div>
                         </div>
+                      </div>
+                      <div className='items-end flex justify-end'>
                         <button
                           onClick={() => handleMarkAsPaid(debt.id)}
                           disabled={mutation.isPending}
                           className="group/btn relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 cursor-pointer disabled:opacity-50"
                         >
                           <span className="relative z-10 flex items-center justify-center space-x-2">
-                            <span>{mutation.isPending ? 'Processando...' : 'Marcar como Pago'}</span>
+                            <span>{mutation.isPending ? 'Processando...' : 'Bólos pago!'}</span>
                             {!mutation.isPending && (
                               <span className="group-hover/btn:translate-x-1 transition-transform">
                                 →
@@ -256,19 +246,19 @@ export default function PendingDebtsList() {
             <div className="text-green-400">
               <span className="text-blue-400">admin@bolos-ti</span>
               <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~/pending-debts</span>
+              <span className="text-purple-400">~/pending-bolos</span>
               <span className="text-gray-400">$ </span>
               <span className="text-white">
-                echo "Acompanhe as dívidas de bólos pendentes! 🎂"
+                echo "Acompanhe os bólos pendentes! 🎂"
               </span>
             </div>
             <div className="text-gray-300 mt-2 ml-2">
-              Acompanhe as dívidas de bólos pendentes! 🎂
+              Acompanhe os bólos pendentes! 🎂
             </div>
             <div className="flex items-center mt-4">
               <span className="text-blue-400">admin@bolos-ti</span>
               <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~/pending-debts</span>
+              <span className="text-purple-400">~/pending-bolos</span>
               <span className="text-gray-400">$ </span>
               <span className="animate-pulse text-white">█</span>
             </div>

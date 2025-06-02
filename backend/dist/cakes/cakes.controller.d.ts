@@ -12,8 +12,18 @@ export declare class CakesController {
     markAsPaid(id: string): Promise<import("./entities/cake-debt.entity").CakeDebt>;
     findCakesPaid(): Promise<import("./entities/cake-debt.entity").CakeDebt[]>;
     findCakesMaxPending(): Promise<{
-        userId: number;
-        userName: string;
-        pendingCount: number;
-    }[]>;
+        data: {
+            userId: number;
+            userName: string;
+            pendingCount: number;
+            message: string;
+        }[];
+    }>;
+    findCakesMaxPaid(): Promise<{
+        data: {
+            userId: number;
+            userName: string;
+            paidCount: number;
+        }[];
+    }>;
 }

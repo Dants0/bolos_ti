@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 export default function CakesPage() {
   return (
       <QueryClientProvider client={queryClient}>
-        <div className="grid grid-cols-1 xl:grid-cols-2">
+        <div className="">
           <CreateCakeDebtForm />
           <PendingDebtsList />
         </div>

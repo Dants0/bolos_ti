@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Bolos da TI",
-  description: 'Controle as dívidas de bolo da sua equipe de TI'
+  description: 'Controle as Bóloss de bolo da sua equipe de TI'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
