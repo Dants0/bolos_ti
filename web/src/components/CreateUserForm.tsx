@@ -8,7 +8,6 @@ import Link from 'next/link';
 
 export default function CreateUserForm() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [photo, setPhoto] = useState<File | null>(null);
   const [loadingComplete, setLoadingComplete] = useState(false);
   const router = useRouter();
@@ -31,7 +30,6 @@ export default function CreateUserForm() {
     try {
       const formData: any = new FormData();
       formData.append('name', name);
-      formData.append('email', email);
       if (photo) {
         formData.append('photo', photo);
       }
@@ -40,7 +38,6 @@ export default function CreateUserForm() {
         toast.success('Usuário criado com sucesso! 🎉');
       }
       setName('');
-      setEmail('');
       setPhoto(null);
       router.refresh();
     } catch (error) {
@@ -135,23 +132,6 @@ export default function CreateUserForm() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="block text-lg font-mono text-gray-300"
-                  >
-                    📧 Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 hover:border-blue-500/50"
-                    placeholder="colaborador@labcmi.org.br"
-                    required
-                  />
-                </div>
 
                 <div className="space-y-2">
                   <label

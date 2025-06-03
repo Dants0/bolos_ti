@@ -143,9 +143,6 @@ export default function ListUsers() {
                           <span className='text-sm font-bold text-white group-hover:text-blue-400 transition-colors font-mono'>
                             id: {user.id}
                           </span>
-                          <p className="text-gray-400 text-sm font-mono">
-                            {user.email}
-                          </p>
                           <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-500/30 text-green-400 text-xs font-mono font-semibold">
                             ✅ Ativo
                           </div>

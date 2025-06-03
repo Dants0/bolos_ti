@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: 'http://192.168.7.9:8080',
 });
 
-export const createUser = async (data: { name: string; email: string }) => {
+export const createUser = async (data: { name: string }) => {
   const response = await api.post<User>('/users', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });

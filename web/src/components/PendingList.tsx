@@ -42,7 +42,6 @@ export default function PendingDebtsList() {
   const filteredDebts = debts.filter(
     (debt) =>
       debt.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      debt.user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       debt.reason.toLowerCase().includes(searchQuery.toLowerCase()),
   );
   return (

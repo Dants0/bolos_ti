@@ -27,7 +27,7 @@ export class UsersController {
         }),
     )
     async create(
-        @Body() body: { name: string; email: string },
+        @Body() body: { name: string},
         @UploadedFile(
             new ParseFilePipe({
                 fileIsRequired: false,
@@ -37,6 +37,6 @@ export class UsersController {
     ) {
         // Salvar apenas o caminho relativo
         const photoPath = photo ? `uploads/${photo.filename}` : undefined;
-        return this.usersService.create(body.name, body.email, photoPath);
+        return this.usersService.create(body.name, photoPath);
     }
 }

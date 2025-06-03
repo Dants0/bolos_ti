@@ -9,9 +9,6 @@ export class User {
     @Column()
     name: string;
 
-    @Column()
-    email: string;
-
     @Column({ nullable: true }) // Pode ser nulo se o usuário não enviar foto
     photo: string;
 
