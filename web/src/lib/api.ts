@@ -3,7 +3,7 @@ import { User } from '../types/user';
 import { CakeDebt } from '../types/cakes';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://192.168.7.9:8080',
 });
 
 export const createUser = async (data: { name: string; email: string }) => {
