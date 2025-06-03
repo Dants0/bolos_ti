@@ -240,41 +240,41 @@ export default function CreateCakeDebtForm() {
               </form>
             </div>
           </div>
-        </div>
-
-        {/* Terminal-style feedback */}
-        <div
-          className={`mt-8 transition-all duration-1000 delay-500 opacity-100 translate-y-0
+          {/* Terminal-style feedback */}
+          <div
+            className={`mt-8 transition-all duration-1000 delay-500 opacity-100 translate-y-0
             }`}
-        >
-          <div className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 font-mono">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-              <span className="text-gray-400 text-sm ml-4">terminal</span>
-            </div>
-            <div className="text-green-400">
-              <span className="text-blue-400">admin@bolos-ti</span>
-              <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~/pending-bolos</span>
-              <span className="text-gray-400">$ </span>
-              <span className="text-white">
-                echo "Registrar novo bólos! 🎂"
-              </span>
-            </div>
-            <div className="text-gray-300 mt-2 ml-2">
-              Registrar novo bólos! 🎂
-            </div>
-            <div className="flex items-center mt-4">
-              <span className="text-blue-400">admin@bolos-ti</span>
-              <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~/pending-bolos</span>
-              <span className="text-gray-400">$ </span>
-              <span className="animate-pulse text-white">█</span>
+          >
+            <div className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 font-mono">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                <span className="text-gray-400 text-sm ml-4">terminal</span>
+              </div>
+              <div className="text-green-400">
+                <span className="text-blue-400">admin@bolos-ti</span>
+                <span className="text-gray-400">:</span>
+                <span className="text-purple-400">~/pending-bolos</span>
+                <span className="text-gray-400">$ </span>
+                <span className="text-white">
+                  echo "Registrar novo bólos! 🎂"
+                </span>
+              </div>
+              <div className="text-gray-300 mt-2 ml-2">
+                Registrar novo bólos! 🎂
+              </div>
+              <div className="flex items-center mt-4">
+                <span className="text-blue-400">admin@bolos-ti</span>
+                <span className="text-gray-400">:</span>
+                <span className="text-purple-400">~/pending-bolos</span>
+                <span className="text-gray-400">$ </span>
+                <span className="animate-pulse text-white">█</span>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

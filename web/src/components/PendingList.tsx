@@ -162,48 +162,41 @@ export default function PendingDebtsList() {
                   {filteredDebts.map((debt) => (
                     <div
                       key={debt.id}
-                      className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 w-full"
+                      className="bg-gray-800/50 border backdrop-blur-sm rounded-2xl p-6 border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 w-full"
                     >
                       <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center space-x-4 w-full">
-
-                          <div className="space-y-2">
+                        <div className="space-y-6 w-full">
+                          <div className='w-full flex justify-center items-center'>
                             <Image
                               src={`http://localhost:8080/${debt.user.photo}`}
                               alt={debt.user.name}
                               width={200}
                               height={200}
-                              className="rounded-full object-cover border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300"
+                              className="rounded-full flex object-cover border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300"
                               onError={() =>
                                 toast.error(`Erro ao carregar imagem de ${debt.user.name}`)
                               }
                             />
-                            <div className="flex items-center space-x-2">
-                              <span className="text-2xl">🧑‍💻</span>
-                              <p className="text-white font-bold text-lg font-mono group-hover/debt:text-purple-400 transition-colors">
-                                {debt.user.name}
-                              </p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <span className="text-lg">📧</span>
-                              <p className="text-gray-400 text-sm font-mono">
-                                {debt.user.email}
-                              </p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <span className="text-lg">💭</span>
-                              <p className="text-gray-300 font-mono">{debt.reason}</p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <span className="text-lg">📅</span>
-                              <p className="text-gray-400 text-sm font-mono">
-                                {new Date(debt.date).toLocaleDateString('pt-BR')}
-                              </p>
-                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-2xl">🧑‍💻</span>
+                            <p className="text-white font-bold text-lg font-mono group-hover/debt:text-purple-400 transition-colors">
+                              {debt.user.name}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">💭</span>
+                            <p className="text-gray-300 font-mono">{debt.reason}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">📅</span>
+                            <p className="text-gray-400 text-sm font-mono">
+                              {new Date(debt.date).toLocaleDateString('pt-BR')}
+                            </p>
                           </div>
                         </div>
                       </div>
-                      <div className='items-end flex justify-end'>
+                      <div className='items-end flex justify-end mt-6'>
                         <button
                           onClick={() => handleMarkAsPaid(debt.id)}
                           disabled={mutation.isPending}
@@ -229,38 +222,39 @@ export default function PendingDebtsList() {
               )}
             </div>
           </div>
-        </div>
 
-        {/* Terminal-style feedback */}
-        <div
-          className={`mt-8 transition-all duration-1000 delay-500 opacity-100 translate-y-0
+
+          {/* Terminal-style feedback */}
+          <div
+            className={`mt-8 transition-all duration-1000 delay-500 opacity-100 translate-y-0
             }`}
-        >
-          <div className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 font-mono">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-              <span className="text-gray-400 text-sm ml-4">terminal</span>
-            </div>
-            <div className="text-green-400">
-              <span className="text-blue-400">admin@bolos-ti</span>
-              <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~/pending-bolos</span>
-              <span className="text-gray-400">$ </span>
-              <span className="text-white">
-                echo "Acompanhe os bólos pendentes! 🎂"
-              </span>
-            </div>
-            <div className="text-gray-300 mt-2 ml-2">
-              Acompanhe os bólos pendentes! 🎂
-            </div>
-            <div className="flex items-center mt-4">
-              <span className="text-blue-400">admin@bolos-ti</span>
-              <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~/pending-bolos</span>
-              <span className="text-gray-400">$ </span>
-              <span className="animate-pulse text-white">█</span>
+          >
+            <div className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 font-mono">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                <span className="text-gray-400 text-sm ml-4">terminal</span>
+              </div>
+              <div className="text-green-400">
+                <span className="text-blue-400">admin@bolos-ti</span>
+                <span className="text-gray-400">:</span>
+                <span className="text-purple-400">~/pending-bolos</span>
+                <span className="text-gray-400">$ </span>
+                <span className="text-white">
+                  echo "Acompanhe os bólos pendentes! 🎂"
+                </span>
+              </div>
+              <div className="text-gray-300 mt-2 ml-2">
+                Acompanhe os bólos pendentes! 🎂
+              </div>
+              <div className="flex items-center mt-4">
+                <span className="text-blue-400">admin@bolos-ti</span>
+                <span className="text-gray-400">:</span>
+                <span className="text-purple-400">~/pending-bolos</span>
+                <span className="text-gray-400">$ </span>
+                <span className="animate-pulse text-white">█</span>
+              </div>
             </div>
           </div>
         </div>
