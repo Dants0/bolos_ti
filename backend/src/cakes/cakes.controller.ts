@@ -33,14 +33,12 @@ export class CakesController {
   @Get('/max-pending')
   async findCakesMaxPending() {
     const result = await this.cakesService.findUsersMaxPendingCakes();
-    console.log(result);
     return { data: result }; // Wrap in data for consistency
   }
 
   @Get('/max-paid')
   async findCakesMaxPaid() {
     const result = await this.cakesService.findUsersMaxPaidCakes();
-    console.log(result);
     return { data: result };
   }
 }

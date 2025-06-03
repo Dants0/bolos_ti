@@ -35,8 +35,10 @@ export default function CreateUserForm() {
       if (photo) {
         formData.append('photo', photo);
       }
-      await createUser(formData);
-      toast.success('Usuário criado com sucesso! 🎉');
+      const response = await createUser(formData);
+      if (response.id != null) {
+        toast.success('Usuário criado com sucesso! 🎉');
+      }
       setName('');
       setEmail('');
       setPhoto(null);

@@ -158,26 +158,26 @@ export default function PendingDebtsList() {
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 space-y-4 pr-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-6 space-y-4 pr-2">
                   {filteredDebts.map((debt) => (
                     <div
                       key={debt.id}
-                      className="group/debt relative bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300"
+                      className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 w-full"
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center space-x-4 w-full">
 
                           <div className="space-y-2">
-                              <Image
-                                src={`http://localhost:8080/${debt.user.photo}`}
-                                alt={debt.user.name}
-                                width={200}
-                                height={200}
-                                className="rounded-full object-cover border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300"
-                                onError={() =>
-                                  toast.error(`Erro ao carregar imagem de ${debt.user.name}`)
-                                }
-                              />
+                            <Image
+                              src={`http://localhost:8080/${debt.user.photo}`}
+                              alt={debt.user.name}
+                              width={200}
+                              height={200}
+                              className="rounded-full object-cover border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300"
+                              onError={() =>
+                                toast.error(`Erro ao carregar imagem de ${debt.user.name}`)
+                              }
+                            />
                             <div className="flex items-center space-x-2">
                               <span className="text-2xl">🧑‍💻</span>
                               <p className="text-white font-bold text-lg font-mono group-hover/debt:text-purple-400 transition-colors">

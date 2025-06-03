@@ -37,12 +37,10 @@ let CakesController = class CakesController {
     }
     async findCakesMaxPending() {
         const result = await this.cakesService.findUsersMaxPendingCakes();
-        console.log(result);
         return { data: result };
     }
     async findCakesMaxPaid() {
         const result = await this.cakesService.findUsersMaxPaidCakes();
-        console.log(result);
         return { data: result };
     }
 };

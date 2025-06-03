@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPendingCakes, getUsersMaxPaidCakes, PaidCakeUser, PendingCakeUser } from '@/lib/api';
-import { User } from '@/types/user';
+import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPaidCakes, PaidCakeUser, PendingCakeUser } from '@/lib/api';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -12,7 +11,6 @@ export default function Home() {
   const [qtdBolosPaid, setQtdBolosPaid] = useState<number>(0);
   const [qtdBolosDevidos, setQtdBolosDevidos] = useState<number>(0);
   const [qtdUsers, setQtdUsers] = useState<number>(0);
-  const [userBestPending, setUserBestPending] = useState<PendingCakeUser | null>(null);
   const [userBestPaid, setUserBestPaid] = useState<PaidCakeUser | null>(null);
 
 
@@ -59,16 +57,12 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const pending = await getUsersMaxPendingCakes();
-      setUserBestPending(pending);
       const paid = await getUsersMaxPaidCakes();
-      console.log(paid);
       setUserBestPaid(paid);
     };
     fetchData();
   }, []);
 
-  // console.log(userBest)
   const stats = [
     { label: 'Bólos Pagos', value: qtdBolosPaid.toString(), icon: '💲' },
     { label: 'Bólos Pendentes', value: qtdBolosDevidos.toString(), icon: '🍰' },
@@ -77,11 +71,6 @@ export default function Home() {
 
 
   const maxPaidsAndPending = [
-    {
-      label: 'Maior Devedor de Bólos',
-      value: userBestPending ? userBestPending.name : 'Ninguém',
-      icon: '🏆',
-    },
     {
       label: 'Quem mais pagou bólos?',
       value: userBestPaid ? userBestPaid.name : 'Ninguém',
@@ -105,7 +94,7 @@ export default function Home() {
               <span className="text-green-400 font-mono text-sm">SYSTEM ONLINE</span>
             </div>
             <div className="text-gray-300 font-mono text-sm">
-              | BUILD v0.0.1
+              | BUILD v0.0.8
             </div>
           </div>
         </div>
@@ -138,7 +127,7 @@ export default function Home() {
         </div>
 
         <div
-          className={`grid grid-cols-2 md:grid-cols-2 gap-6 mb-16 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          className={`grid grid-cols-1 md:grid-cols-1 gap-6 mb-16 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
         >
           {maxPaidsAndPending.map((stat, index) => (
@@ -209,10 +198,6 @@ export default function Home() {
                   <div className="flex items-center space-x-3 text-sm text-gray-400">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                     <span>{qtdUsers} colaboradores ativos</span>
-                  </div>
-                  <div className="flex items-center space-x-3 text-sm text-gray-400">
-                    <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                    <span>0 revisões pendentes</span>
                   </div>
                 </div>
 

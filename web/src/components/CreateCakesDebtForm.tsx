@@ -12,11 +12,10 @@ import { User } from '@/types/user';
 const reasons = [
   '🐛 Bug em produção',
   '🔧 Gambiarra detectada',
-  '💥 Quebrou o build',
-  '🚨 Commit na master sem review',
-  '🗑️ Código sem comentários',
-  '⚡ Hardcode de valores',
-  '🔑 Credenciais no código',
+  '💥 Quebrou o Tasy',
+  '🚨 Quebrou o Sydle',
+  '🗑️ Quebrou o WeKnow',
+  '⚡ Quebrou o GLPI',
   '🎯 Outros motivos',
 ];
 
@@ -161,7 +160,7 @@ export default function CreateCakeDebtForm() {
               <div className="flex items-center justify-center space-x-3 mb-8">
                 <div className="h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent flex-1"></div>
                 <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text">
-                  🎂 Registrar Nova Bólos
+                  🎂 Registrar Novo Bólos
                 </h2>
                 <div className="h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent flex-1"></div>
               </div>
