@@ -18,7 +18,7 @@ export class CakesController {
   @Post()
   async create(@Body() body: { userId: number; reason: string; date: Date, passKey: string }) {
 
-    if (body.passKey !== 'ti@labcmi') {
+    if (body.passKey !== 'af3244989a4c12439b8fc7e2b78f0db6debd7b2ce8f6dbe41a7f315b6d403031') {
       throw new UnauthorizedException({
         code: 400,
         message: "Senha incorreta"

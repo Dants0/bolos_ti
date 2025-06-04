@@ -35,6 +35,19 @@ export default function PendingDebtsList() {
   });
 
   const handleMarkAsPaid = (id: number) => {
+    const passKey = window.prompt('Digite a palavra-passe para confirmar o pagamento:');
+
+    if (!passKey) {
+      return; // usuário cancelou
+    }
+
+    if (passKey != "af3244989a4c12439b8fc7e2b78f0db6debd7b2ce8f6dbe41a7f315b6d403031") {
+      toast.error("Senha incorreta")
+      return;
+    }
+
+
+
     mutation.mutate(id);
   };
 
@@ -164,6 +177,7 @@ export default function PendingDebtsList() {
                       className="bg-gray-800/50 border backdrop-blur-sm rounded-2xl p-6 border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 w-full"
                     >
                       <div className="flex items-center justify-between w-full">
+
                         <div className="space-y-6 w-full">
                           <div className='w-full flex justify-center items-center'>
                             <Image
