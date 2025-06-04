@@ -118,7 +118,8 @@ export default function ListUsers() {
                         {user.photo ? (
                           <div className="relative">
                             <Image
-                              src={`http://192.168.7.9:8080/${user.photo}`}
+                              // src={`http://192.168.7.9:8080/${user.photo}`}
+                              src={`http://localhost:8080/${user.photo}`}
                               width={100}
                               height={100}
                               alt={user.name}
@@ -140,12 +141,6 @@ export default function ListUsers() {
                           <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors font-mono">
                             {user.name}
                           </h3>
-                          <span className='text-sm font-bold text-white group-hover:text-blue-400 transition-colors font-mono'>
-                            id: {user.id}
-                          </span>
-                          <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-500/30 text-green-400 text-xs font-mono font-semibold">
-                            ✅ Ativo
-                          </div>
                         </div>
 
                         {/* Glow effect on hover */}

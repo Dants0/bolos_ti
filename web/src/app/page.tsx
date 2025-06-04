@@ -132,7 +132,7 @@ export default function Home() {
         >
           {maxPaidsAndPending.map((stat, index) => (
             <div key={index} className="group relative">
-              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:scale-105">
+              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300">
                 <div className="text-3xl mb-2">{stat.icon}</div>
                 <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-gray-400 font-mono">{stat.label}</div>
@@ -150,7 +150,7 @@ export default function Home() {
         >
           {stats.map((stat, index) => (
             <div key={index} className="group relative">
-              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:scale-105">
+              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300">
                 <div className="text-3xl mb-2">{stat.icon}</div>
                 <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-gray-400 font-mono">{stat.label}</div>
@@ -198,6 +198,12 @@ export default function Home() {
                   <div className="flex items-center space-x-3 text-sm text-gray-400">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                     <span>{qtdUsers} colaboradores ativos</span>
+                  </div>
+                </div>
+                <div className="space-y-2 mb-8">
+                  <div className="flex items-center space-x-3 text-sm text-gray-400">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span>2 administradores ativos</span>
                   </div>
                 </div>
 

@@ -167,7 +167,8 @@ export default function PendingDebtsList() {
                         <div className="space-y-6 w-full">
                           <div className='w-full flex justify-center items-center'>
                             <Image
-                              src={`http://192.168.7.9:8080/${debt.user.photo}`}
+                              // src={`http://192.168.7.9:8080/${debt.user.photo}`}
+                              src={`http://localhost:8080/${debt.user.photo}`}
                               alt={debt.user.name}
                               width={200}
                               height={200}
@@ -176,12 +177,6 @@ export default function PendingDebtsList() {
                                 toast.error(`Erro ao carregar imagem de ${debt.user.name}`)
                               }
                             />
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl">🧑‍💻</span>
-                            <p className="text-white font-bold text-lg font-mono group-hover/debt:text-purple-400 transition-colors">
-                              {debt.user.name}
-                            </p>
                           </div>
                           <div className="flex items-center space-x-2">
                             <span className="text-lg">💭</span>

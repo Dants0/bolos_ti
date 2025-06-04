@@ -24,6 +24,7 @@ export default function CreateCakeDebtForm() {
   const [reason, setReason] = useState('');
   const [customReason, setCustomReason] = useState('');
   const [date, setDate] = useState('');
+  const [passKey, setPassKey] = useState('');
   const [loadingComplete, setLoadingComplete] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -52,7 +53,7 @@ export default function CreateCakeDebtForm() {
 
   // Mutation for creating a cake debt
   const mutation = useMutation({
-    mutationFn: (data: { userId: number; reason: string; date: string }) =>
+    mutationFn: (data: { userId: number; reason: string; date: string, passKey: string }) =>
       createCakeDebt(data),
     onSuccess: () => {
       toast.success('Bólos registrado! 🎂');
@@ -63,10 +64,15 @@ export default function CreateCakeDebtForm() {
       setReason('');
       setCustomReason('');
       setDate('');
+      setPassKey('');
       router.refresh(); // Re-added for consistency with previous fix
     },
-    onError: () => {
-      toast.error('Erro ao registrar Bólos 😞');
+    onError: (err: any) => {
+      if (err.response.data.code == 400) {
+        toast.error(err.response.data.message)
+      } else {
+        toast.error('Erro ao registrar Bólos 😞');
+      }
     },
   });
 
@@ -83,6 +89,7 @@ export default function CreateCakeDebtForm() {
       userId: Number(userId),
       reason: finalReason,
       date,
+      passKey
     });
   };
 
@@ -219,6 +226,20 @@ export default function CreateCakeDebtForm() {
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
+                    className="w-full p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:border-purple-500/50"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="passKey" className="block text-lg font-mono text-gray-300">
+                    🔑 Palavra passe
+                  </label>
+                  <input
+                    id="passKey"
+                    type="password"
+                    value={passKey}
+                    onChange={(e) => setPassKey(e.target.value)}
                     className="w-full p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:border-purple-500/50"
                     required
                   />

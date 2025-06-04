@@ -3,7 +3,8 @@ import { User } from '../types/user';
 import { CakeDebt } from '../types/cakes';
 
 const api = axios.create({
-  baseURL: 'http://192.168.7.9:8080',
+  // baseURL: 'http://192.168.7.9:8080',
+  baseURL: 'http://localhost:8080',
 });
 
 export const createUser = async (data: { name: string }) => {
@@ -28,7 +29,7 @@ export const getCakesByUserId = async (userId: number) => {
   return response.data;
 };
 
-export const createCakeDebt = async (data: { userId: number; reason: string; date: string }) => {
+export const createCakeDebt = async (data: { userId: number; reason: string; date: string, passKey: string }) => {
   const response = await api.post<CakeDebt>('/cakes', data);
   return response.data;
 };

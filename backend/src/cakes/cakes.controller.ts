@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Param, Body, UnauthorizedException } from '@nestjs/common';
 import { CakesService } from './cakes.service';
 
 @Controller('cakes')
@@ -16,8 +16,16 @@ export class CakesController {
   }
 
   @Post()
-  async create(@Body() body: { userId: number; reason: string; date: string }) {
-    return this.cakesService.create(body.userId, body.reason, new Date(body.date));
+  async create(@Body() body: { userId: number; reason: string; date: Date, passKey: string }) {
+
+    if (body.passKey !== 'ti@labcmi') {
+      throw new UnauthorizedException({
+        code: 400,
+        message: "Senha incorreta"
+      });
+    }
+
+    return this.cakesService.create(body.userId, body.reason, body.date);
   }
 
   @Put(':id/pay')
