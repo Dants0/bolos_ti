@@ -5,5 +5,6 @@ export interface CakeDebt {
   user: User;
   reason: string;
   date: string;
+  dateOcorrido: string;
   status: 'pending' | 'paid';
 }

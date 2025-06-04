@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Param, Body, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Param, Body, UnauthorizedException, Delete } from '@nestjs/common';
 import { CakesService } from './cakes.service';
 
 @Controller('cakes')
@@ -16,7 +16,7 @@ export class CakesController {
   }
 
   @Post()
-  async create(@Body() body: { userId: number; reason: string; date: Date, passKey: string }) {
+  async create(@Body() body: { userId: number; reason: string; date: Date, passKey: string, dateOcorrido: Date }) {
 
     if (body.passKey !== 'af3244989a4c12439b8fc7e2b78f0db6debd7b2ce8f6dbe41a7f315b6d403031') {
       throw new UnauthorizedException({
@@ -25,7 +25,7 @@ export class CakesController {
       });
     }
 
-    return this.cakesService.create(body.userId, body.reason, body.date);
+    return this.cakesService.create(body.userId, body.reason, body.date, body.dateOcorrido);
   }
 
   @Put(':id/pay')
@@ -48,5 +48,10 @@ export class CakesController {
   async findCakesMaxPaid() {
     const result = await this.cakesService.findUsersMaxPaidCakes();
     return { data: result };
+  }
+
+  @Delete(':id/cake')
+  async deleteCake(@Param('id') id: string) {
+    return this.cakesService.deleteCake(+id);
   }
 }

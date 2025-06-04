@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import { getCakes, markCakeAsPaid } from '../lib/api';
+import { deleteCake, getCakes, markCakeAsPaid } from '../lib/api';
 import { CakeDebt } from '@/types/cakes';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 
@@ -34,8 +34,22 @@ export default function PendingDebtsList() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteCake,
+    onSuccess: () => {
+      toast.success('Bólos apagado com sucesso 🗑️');
+      queryClient.invalidateQueries({ queryKey: ['pendingDebts'] });
+      queryClient.invalidateQueries({ queryKey: ['cakes'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
+    },
+    onError: () => {
+      toast.error('Erro ao apagar o bólos 😞');
+    },
+  });
+
+
   const handleMarkAsPaid = (id: number) => {
-    const passKey = window.prompt('Digite a palavra-passe para confirmar o pagamento:');
+    const passKey = window.prompt('Digite a palavra-passe para confirmar o bolos:');
 
     if (!passKey) {
       return; // usuário cancelou
@@ -50,6 +64,21 @@ export default function PendingDebtsList() {
 
     mutation.mutate(id);
   };
+
+  const handleDeleteCake = (id: number) => {
+    const passKey = window.prompt('Digite a palavra-passe para apagar:');
+
+    if (!passKey) return;
+    if (passKey !== "af3244989a4c12439b8fc7e2b78f0db6debd7b2ce8f6dbe41a7f315b6d403031") {
+      toast.error("Senha incorreta");
+      return;
+    }
+
+    deleteMutation.mutate(id);
+  };
+
+
+
 
   // Filter debts based on search query
   const filteredDebts = debts.filter(
@@ -181,7 +210,7 @@ export default function PendingDebtsList() {
                         <div className="space-y-6 w-full">
                           <div className='w-full flex justify-center items-center'>
                             <Image
-                              // src={`http://192.168.7.9:8080/${debt.user.photo}`}
+                              // src={`http://192.168.0.190:8080/${debt.user.photo}`}
                               src={`http://localhost:8080/${debt.user.photo}`}
                               alt={debt.user.name}
                               width={200}
@@ -193,12 +222,17 @@ export default function PendingDebtsList() {
                             />
                           </div>
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg">💭</span>
                             <p className="text-gray-300 font-mono">{debt.reason}</p>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg">📅</span>
-                            <p className="text-gray-400 text-sm font-mono">
+                            <span className="text-lg text-gray-400 ">📅 Data do Ocorrido</span>
+                            <p className="text-gray-400 text-md font-mono">
+                              {new Date(debt.dateOcorrido).toLocaleDateString('pt-BR')}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg text-gray-400 ">📅 Data do Bólos</span>
+                            <p className="text-gray-400 text-md font-mono">
                               {new Date(debt.date).toLocaleDateString('pt-BR')}
                             </p>
                           </div>
@@ -215,6 +249,21 @@ export default function PendingDebtsList() {
                             {!mutation.isPending && (
                               <span className="group-hover/btn:translate-x-1 transition-transform">
                                 →
+                              </span>
+                            )}
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCake(debt.id)}
+                          disabled={deleteMutation.isPending}
+                          className="ml-4 group/btn relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 cursor-pointer disabled:opacity-50"
+                        >
+                          <span className="relative z-10 flex items-center justify-center space-x-2">
+                            <span>{deleteMutation.isPending ? 'Apagando...' : 'Apagar bólos'}</span>
+                            {!deleteMutation.isPending && (
+                              <span className="group-hover/btn:translate-x-1 transition-transform">
+                                🗑️
                               </span>
                             )}
                           </span>

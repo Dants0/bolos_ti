@@ -3,7 +3,7 @@ import { User } from '../types/user';
 import { CakeDebt } from '../types/cakes';
 
 const api = axios.create({
-  // baseURL: 'http://192.168.7.9:8080',
+  // baseURL: 'http://192.168.0.190:8080',
   baseURL: 'http://localhost:8080',
 });
 
@@ -29,7 +29,7 @@ export const getCakesByUserId = async (userId: number) => {
   return response.data;
 };
 
-export const createCakeDebt = async (data: { userId: number; reason: string; date: string, passKey: string }) => {
+export const createCakeDebt = async (data: { userId: number; reason: string; date: string, passKey: string, dateOcorrido: string }) => {
   const response = await api.post<CakeDebt>('/cakes', data);
   return response.data;
 };
@@ -65,3 +65,13 @@ export const getUsersMaxPaidCakes = async (): Promise<PaidCakeUser | null> => {
   const response = await api.get<{ data: PaidCakeUser[] }>('/cakes/max-paid');
   return response.data.data[0] || null;
 };
+
+export async function deleteCake(id: number): Promise<void> {
+  const res = await fetch(`http://localhost:8080/cakes/${id}/cake`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    throw new Error('Erro ao apagar o bólos');
+  }
+}

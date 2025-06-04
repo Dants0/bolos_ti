@@ -10,7 +10,7 @@ import { CakesModule } from './cakes/cakes.module';
     TypeOrmModule.forRoot({
       type: 'postgres', // Tipo do banco
       host: 'localhost', // Ou o host do seu serviço (ex.: 'db.supabase.co')
-      // host: '192.168.7.9', // Ou o host do seu serviço (ex.: 'db.supabase.co')
+      // host: '192.168.0.190', // Ou o host do seu serviço (ex.: 'db.supabase.co')
       port: 5432, // Porta padrão do PostgreSQL
       username: 'meu_usuario', // Seu usuário
       password: 'minha_senha', // Sua senha

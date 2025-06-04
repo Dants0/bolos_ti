@@ -24,6 +24,7 @@ export default function CreateCakeDebtForm() {
   const [reason, setReason] = useState('');
   const [customReason, setCustomReason] = useState('');
   const [date, setDate] = useState('');
+  const [dateOcorrido, setDateOcorrido] = useState('');
   const [passKey, setPassKey] = useState('');
   const [loadingComplete, setLoadingComplete] = useState(false);
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function CreateCakeDebtForm() {
 
   // Mutation for creating a cake debt
   const mutation = useMutation({
-    mutationFn: (data: { userId: number; reason: string; date: string, passKey: string }) =>
+    mutationFn: (data: { userId: number; reason: string; date: string, passKey: string, dateOcorrido: string }) =>
       createCakeDebt(data),
     onSuccess: () => {
       toast.success('Bólos registrado! 🎂');
@@ -64,6 +65,7 @@ export default function CreateCakeDebtForm() {
       setReason('');
       setCustomReason('');
       setDate('');
+      setDateOcorrido('');
       setPassKey('');
       router.refresh(); // Re-added for consistency with previous fix
     },
@@ -89,6 +91,7 @@ export default function CreateCakeDebtForm() {
       userId: Number(userId),
       reason: finalReason,
       date,
+      dateOcorrido,
       passKey
     });
   };
@@ -218,6 +221,20 @@ export default function CreateCakeDebtForm() {
                 )}
 
                 <div className="space-y-2">
+                  <label htmlFor="dateOcorrido" className="block text-lg font-mono text-gray-300">
+                    📅 Data do ocorrido
+                  </label>
+                  <input
+                    id="dateOcorrido"
+                    type="date"
+                    value={dateOcorrido}
+                    onChange={(e) => setDateOcorrido(e.target.value)}
+                    className="w-full p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:border-purple-500/50"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <label htmlFor="date" className="block text-lg font-mono text-gray-300">
                     📅 Data para pagar o Bólos
                   </label>
@@ -231,6 +248,8 @@ export default function CreateCakeDebtForm() {
                   />
                 </div>
 
+
+
                 <div className="space-y-2">
                   <label htmlFor="passKey" className="block text-lg font-mono text-gray-300">
                     🔑 Palavra passe
@@ -238,6 +257,7 @@ export default function CreateCakeDebtForm() {
                   <input
                     id="passKey"
                     type="password"
+                    placeholder='**********************************'
                     value={passKey}
                     onChange={(e) => setPassKey(e.target.value)}
                     className="w-full p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:border-purple-500/50"

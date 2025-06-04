@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CakeDebt } from "./entities/cake-debt.entity";
@@ -12,10 +12,10 @@ export class CakesService {
         private usersService: UsersService,
     ) { }
 
-    async create(userId: number, reason: string, date: Date): Promise<CakeDebt> {
+    async create(userId: number, reason: string, date: Date, dateOcorrido: Date): Promise<CakeDebt> {
         const user = await this.usersService.findOne(userId)
-        if (!user) throw new Error("Usuário não encontrado")
-        const cakeDebt = this.cakesRepository.create({ user, reason, date })
+        if (!user) throw new NotFoundException("Usuário não encontrado")
+        const cakeDebt = this.cakesRepository.create({ user, reason, date, dateOcorrido })
         return this.cakesRepository.save(cakeDebt)
     }
 
@@ -25,9 +25,16 @@ export class CakesService {
 
     async markAsPaid(id: number): Promise<CakeDebt> {
         const cakeDebt = await this.cakesRepository.findOneBy({ id })
-        if (!cakeDebt) throw new Error("Bólos não encontrada");
+        if (!cakeDebt) throw new NotFoundException("Bólos não encontrada");
         cakeDebt.status = 'paid'
         return this.cakesRepository.save(cakeDebt)
+    }
+
+    async deleteCake(id: number): Promise<CakeDebt> {
+        const cakeDebt = await this.cakesRepository.findOne({ where: { id } })
+        if (!cakeDebt) throw new NotFoundException("Bólos não encontrado");
+
+        return this.cakesRepository.remove(cakeDebt)
     }
 
     async findByUserId(userId: number): Promise<CakeDebt[]> {

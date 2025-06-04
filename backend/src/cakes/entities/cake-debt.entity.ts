@@ -16,6 +16,9 @@ export class CakeDebt{
     @Column()
     date: Date;
 
+    @Column()
+    dateOcorrido: Date;
+
     @Column({default: 'pending'})
     status: 'pending' | 'paid';
 

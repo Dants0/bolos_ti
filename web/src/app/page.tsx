@@ -199,8 +199,6 @@ export default function Home() {
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                     <span>{qtdUsers} colaboradores ativos</span>
                   </div>
-                </div>
-                <div className="space-y-2 mb-8">
                   <div className="flex items-center space-x-3 text-sm text-gray-400">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                     <span>2 administradores ativos</span>
