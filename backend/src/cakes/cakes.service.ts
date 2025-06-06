@@ -20,7 +20,12 @@ export class CakesService {
     }
 
     async findAll(): Promise<CakeDebt[]> {
-        return this.cakesRepository.find({ relations: ['user'] })
+        return this.cakesRepository.find({
+            relations: ['user'], 
+            order: {
+                date: "ASC"
+            }
+        })
     }
 
     async markAsPaid(id: number): Promise<CakeDebt> {
