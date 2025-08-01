@@ -16,6 +16,8 @@ const reasons = [
   '🚨 Quebrou o Sydle',
   '🗑️ Quebrou o WeKnow',
   '⚡ Quebrou o GLPI',
+  '🎉 Novo(a) Integrante LABCMI',
+  '🎂 Aniversário na LABCMI',
   '🎯 Outros motivos',
 ];
 
