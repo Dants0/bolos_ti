@@ -210,7 +210,7 @@ export default function PendingDebtsList() {
                         <div className="space-y-6 w-full">
                           <div className='w-full flex justify-center items-center'>
                             <Image
-                              src={`http://192.168.0.190:8080/${debt.user.photo}`}
+                              src={`http://192.168.1.192:8080/${debt.user.photo}`}
                               // src={`http://localhost:8080/${debt.user.photo}`}
                               alt={debt.user.name}
                               width={200}
