@@ -6,8 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "start:prod": "pm2 start npm --name "web" -- run start -- --port 3000"
+    "lint": "next lint"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.79.0",
