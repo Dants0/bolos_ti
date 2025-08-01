@@ -3,7 +3,7 @@ import { User } from '../types/user';
 import { CakeDebt } from '../types/cakes';
 
 const api = axios.create({
-  baseURL: 'http://192.168.0.190:8080',
+  baseURL: 'http://192.168.1.192:8080',
   // baseURL: 'http://localhost:8080',
 });
 
@@ -67,8 +67,8 @@ export const getUsersMaxPaidCakes = async (): Promise<PaidCakeUser | null> => {
 };
 
 export async function deleteCake(id: number): Promise<void> {
-  //192.168.0.190
-  const res = await fetch(`http://192.168.0.190:8080/cakes/${id}/cake`, {
+  //192.168.1.192
+  const res = await fetch(`http://192.168.1.192:8080/cakes/${id}/cake`, {
     method: 'DELETE',
   });
 

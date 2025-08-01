@@ -118,7 +118,7 @@ export default function ListUsers() {
                         {user.photo ? (
                           <div className="relative">
                             <Image
-                              src={`http://192.168.0.190:8080/${user.photo}`}
+                              src={`http://192.168.1.192:8080/${user.photo}`}
                               // src={`http://localhost:8080/${user.photo}`}
                               width={100}
                               height={100}

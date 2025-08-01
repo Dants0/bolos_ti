@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "192.168.0.190",
+        hostname: "192.168.1.192",
         // hostname: "localhost",
         pathname: "/**", // Allow all paths under this hostname
       },
