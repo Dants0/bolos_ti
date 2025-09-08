@@ -55,7 +55,7 @@ export default function PendingDebtsList() {
       return; // usuário cancelou
     }
 
-    if (passKey != "af3244989a4c12439b8fc7e2b78f0db6debd7b2ce8f6dbe41a7f315b6d403031") {
+    if (passKey != "5bb2992b4e4744b6b34cb62ab02ee2203bb2992b4e4744b6b34cb62ab02ee220") {
       toast.error("Senha incorreta")
       return;
     }
@@ -69,7 +69,7 @@ export default function PendingDebtsList() {
     const passKey = window.prompt('Digite a palavra-passe para apagar:');
 
     if (!passKey) return;
-    if (passKey !== "af3244989a4c12439b8fc7e2b78f0db6debd7b2ce8f6dbe41a7f315b6d403031") {
+    if (passKey !== "5bb2992b4e4744b6b34cb62ab02ee2203bb2992b4e4744b6b34cb62ab02ee220") {
       toast.error("Senha incorreta");
       return;
     }
