@@ -71,6 +71,9 @@ export async function deleteCake(id: number): Promise<void> {
   const res = await fetch(`http://192.168.1.192:8080/cakes/${id}/cake`, {
     method: 'DELETE',
   });
+  // const res = await fetch(`http://localhost:8080/cakes/${id}/cake`, {
+  //   method: 'DELETE',
+  // });
 
   if (!res.ok) {
     throw new Error('Erro ao apagar o bólos');

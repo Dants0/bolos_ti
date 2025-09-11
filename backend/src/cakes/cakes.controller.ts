@@ -38,6 +38,11 @@ export class CakesController {
     return this.cakesService.findUsersPaidCakes();
   }
 
+  @Get('/allpay')
+  async findAllPaidCakes() {
+    return this.cakesService.findAllPaidCakes();
+  }
+
   @Get('/max-pending')
   async findCakesMaxPending() {
     const result = await this.cakesService.findUsersMaxPendingCakes();

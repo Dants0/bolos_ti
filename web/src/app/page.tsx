@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPaidCakes, PaidCakeUser, PendingCakeUser } from '@/lib/api';
+import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPaidCakes, PaidCakeUser } from '@/lib/api';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -13,36 +13,28 @@ export default function Home() {
   const [qtdUsers, setQtdUsers] = useState<number>(0);
   const [userBestPaid, setUserBestPaid] = useState<PaidCakeUser | null>(null);
 
-
   useEffect(() => {
-    // Fetch all data
     const getAllInformations = async () => {
       try {
-        // Fetch users
         const users = await listUsers();
         setQtdUsers(users.length);
 
-        // Fetch pending cakes
         const cakes = await getCakes();
         const pendingCakes = cakes.filter((cake) => cake.status === 'pending');
         setQtdBolosDevidos(pendingCakes.length);
 
-        // Fetch paid cakes
         const paidCakes = await getQtdCakeAsPaid();
         setQtdBolosPaid(paidCakes.length);
-
       } catch (error) {
         toast.error('Erro ao carregar estatísticas 😞');
       }
     };
     getAllInformations();
 
-    // Update mouse position for interactive effects
     const handleMouseMove = (e: any) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
-    // Loading animation
     const loadingTimer = setTimeout(() => {
       setLoadingComplete(true);
     }, 500);
@@ -64,11 +56,10 @@ export default function Home() {
   }, []);
 
   const stats = [
-    { label: 'Bólos Pagos', value: qtdBolosPaid.toString(), icon: '💲' },
+    { label: 'Bólos Pagos', value: qtdBolosPaid.toString(), icon: '💲', link: "/cakes/pay" },
     { label: 'Bólos Pendentes', value: qtdBolosDevidos.toString(), icon: '🍰' },
     { label: 'Colaboradores', value: qtdUsers.toString(), icon: '👨‍💻' },
   ];
-
 
   const maxPaidsAndPending = [
     {
@@ -80,29 +71,25 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gray-900">
-
-
       <div className="relative z-10 container mx-auto px-6 py-12">
-        {/* Header with system status */}
         <div
-          className={`mb-8 transition-all duration-1000 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+          className={`mb-8 transition-all duration-1000 ${
+            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
         >
           <div className="flex justify-between items-center bg-gray-800/50 backdrop-blur-xl rounded-2xl p-4 border border-gray-700/50">
             <div className="flex items-center space-x-4">
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
               <span className="text-green-400 font-mono text-sm">SYSTEM ONLINE</span>
             </div>
-            <div className="text-gray-300 font-mono text-sm">
-              | BUILD v0.0.8
-            </div>
+            <div className="text-gray-300 font-mono text-sm">| BUILD v1.0.2</div>
           </div>
         </div>
 
-        {/* Hero Section */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 delay-300 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+          className={`text-center mb-16 transition-all duration-1000 delay-300 ${
+            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
         >
           <div className="relative">
             <h1 className="text-7xl font-black mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
@@ -121,14 +108,16 @@ export default function Home() {
 
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
             Sistema avançado de <span className="text-blue-400 font-semibold">rastreamento de bólos</span> para o time
-            de TI Labcmi. Monitore <span className='text-purple-400 font-semibold'>bombas</span>, <span className='text-purple-400 font-semibold'>gambiarras</span> e{' '}
+            de TI Labcmi. Monitore <span className="text-purple-400 font-semibold">bombas</span>,{' '}
+            <span className="text-purple-400 font-semibold">gambiarras</span> e{' '}
             <span className="text-purple-400 font-semibold">bólos</span> em tempo real.
           </p>
         </div>
 
         <div
-          className={`grid grid-cols-1 md:grid-cols-1 gap-6 mb-16 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+          className={`grid grid-cols-1 md:grid-cols-1 gap-6 mb-16 transition-all duration-1000 delay-500 ${
+            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
         >
           {maxPaidsAndPending.map((stat, index) => (
             <div key={index} className="group relative">
@@ -136,8 +125,6 @@ export default function Home() {
                 <div className="text-3xl mb-2">{stat.icon}</div>
                 <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-gray-400 font-mono">{stat.label}</div>
-
-                {/* Glow effect on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-purple-600/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </div>
@@ -145,31 +132,43 @@ export default function Home() {
         </div>
 
         <div
-          className={`grid grid-cols-2 md:grid-cols-3 gap-6 mb-16 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+          className={`grid grid-cols-2 md:grid-cols-3 gap-6 mb-16 transition-all duration-1000 delay-500 ${
+            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
         >
-          {stats.map((stat, index) => (
-            <div key={index} className="group relative">
-              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300">
+          {stats.map((stat, index) => {
+            const CardContent = (
+              <>
                 <div className="text-3xl mb-2">{stat.icon}</div>
                 <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-gray-400 font-mono">{stat.label}</div>
+              </>
+            );
 
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-purple-600/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            return (
+              <div key={index}>
+                <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 relative group">
+                  {stat.link ? (
+                    <Link href={stat.link} className="cursor-pointer block">
+                      {CardContent}
+                    </Link>
+                  ) : (
+                    CardContent
+                  )}
+                  <div className="bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-purple-600/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Main Action Cards */}
         <div
-          className={`grid md:grid-cols-2 gap-8 mb-16 transition-all duration-1000 delay-700 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+          className={`grid md:grid-cols-2 gap-8 mb-16 transition-all duration-1000 delay-700 ${
+            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
         >
           <div className="group relative">
             <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-blue-500/50 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
-              {/* Background pattern */}
               <div className="absolute inset-0 opacity-5">
                 <div
                   className="absolute inset-0"
@@ -220,7 +219,6 @@ export default function Home() {
 
           <div className="group relative">
             <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-purple-500/50 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
-              {/* Background pattern */}
               <div className="absolute inset-0 opacity-5">
                 <div
                   className="absolute inset-0"
@@ -272,10 +270,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Terminal-style quote */}
         <div
-          className={`transition-all duration-1000 delay-1000 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+          className={`transition-all duration-1000 delay-1000 ${
+            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
         >
           <div className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 font-mono">
             <div className="flex items-center space-x-2 mb-4">

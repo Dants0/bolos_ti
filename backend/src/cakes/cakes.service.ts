@@ -21,7 +21,7 @@ export class CakesService {
 
     async findAll(): Promise<CakeDebt[]> {
         return this.cakesRepository.find({
-            relations: ['user'], 
+            relations: ['user'],
             order: {
                 date: "ASC"
             }
@@ -69,6 +69,18 @@ export class CakesService {
         if (!user) {
             throw new Error("Usuário não possui bólos!")
         }
+        return cakeDebts
+    }
+
+    async findAllPaidCakes(): Promise<CakeDebt[]> {
+        const user = await this.usersService.findAll()
+        const cakeDebts = await this.cakesRepository.find({
+            where: {
+                status: "paid"
+            },
+            relations: ['user']
+        })
+
         return cakeDebts
     }
 
