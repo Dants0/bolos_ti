@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "192.168.1.192",
-        // hostname: "localhost",
+        // hostname: ""localhost"",
         pathname: "/**", // Allow all paths under this hostname
       },
     ],

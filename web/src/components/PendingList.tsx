@@ -3,12 +3,15 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import { deleteCake, getCakes, markCakeAsPaid } from '../lib/api';
+import { deleteCake, getCakes, markCakeAsPaid, updateCake } from '../lib/api';
 import { CakeDebt } from '@/types/cakes';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 
 export default function PendingDebtsList() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [editingCake, setEditingCake] = useState<CakeDebt | null>(null);
+  const [editForm, setEditForm] = useState({ reason: '', dsReason: '', date: '', dateOcorrido: '' });
+  const [particles, setParticles] = useState<Array<{ left: string; top: string; delay: string; duration: string }>>([]);
   const queryClient = useQueryClient();
 
   // Query for fetching pending debts
@@ -20,6 +23,18 @@ export default function PendingDebtsList() {
     },
   });
 
+  useEffect(() => {
+    // Generate particles on client side only
+    setParticles(
+      [...Array(10)].map(() => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        delay: `${Math.random() * 3}s`,
+        duration: `${2 + Math.random() * 2}s`,
+      }))
+    );
+  }, []);
+
   // Mutation for marking a cake as paid
   const mutation = useMutation({
     mutationFn: markCakeAsPaid,
@@ -28,6 +43,7 @@ export default function PendingDebtsList() {
       queryClient.invalidateQueries({ queryKey: ['pendingDebts'] });
       queryClient.invalidateQueries({ queryKey: ['cakes'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
+      queryClient.invalidateQueries({ queryKey: ['topPaidUsers'] });
     },
     onError: () => {
       toast.error('Erro ao marcar como pago 😞');
@@ -47,6 +63,22 @@ export default function PendingDebtsList() {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) => updateCake(id, data),
+    onSuccess: () => {
+      toast.success('Bólos atualizado com sucesso! ✏️');
+      setEditingCake(null);
+      queryClient.invalidateQueries({ queryKey: ['pendingDebts'] });
+      queryClient.invalidateQueries({ queryKey: ['cakes'] });
+    },
+    onError: (error: any) => {
+      if (error.response?.status === 401 || error.response?.data?.code === 400) {
+        toast.error('Senha incorreta 🔒');
+      } else {
+        toast.error('Erro ao atualizar bólos 😞');
+      }
+    },
+  });
 
   const handleMarkAsPaid = (id: number) => {
     const passKey = window.prompt('Digite a palavra-passe para confirmar o bolos:');
@@ -59,8 +91,6 @@ export default function PendingDebtsList() {
       toast.error("Senha incorreta")
       return;
     }
-
-
 
     mutation.mutate(id);
   };
@@ -77,17 +107,107 @@ export default function PendingDebtsList() {
     deleteMutation.mutate(id);
   };
 
+  const handleEditClick = (cake: CakeDebt) => {
+    setEditingCake(cake);
+    setEditForm({
+      reason: cake.reason,
+      dsReason: cake.dsReason || '',
+      date: new Date(cake.date).toISOString().split('T')[0],
+      dateOcorrido: new Date(cake.dateOcorrido).toISOString().split('T')[0],
+    });
+  };
 
+  const handleUpdateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCake) return;
 
+    const passKey = window.prompt('Digite a palavra-passe para atualizar:');
+    if (!passKey) return;
+
+    updateMutation.mutate({
+      id: editingCake.id,
+      data: {
+        ...editForm,
+        passKey
+      }
+    });
+  };
 
   // Filter debts based on search query
   const filteredDebts = debts.filter(
     (debt) =>
       debt.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      debt.reason.toLowerCase().includes(searchQuery.toLowerCase()),
+      debt.reason.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (debt.dsReason || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-gray-900">
+      {/* Edit Modal */}
+      {editingCake && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h3 className="text-xl font-bold text-white mb-4">✏️ Editar Bólos</h3>
+            <form onSubmit={handleUpdateSubmit} className="space-y-4">
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Motivo</label>
+                <input
+                  type="text"
+                  value={editForm.reason}
+                  onChange={(e) => setEditForm({ ...editForm, reason: e.target.value })}
+                  className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Descrição do Motivo</label>
+                <input
+                  type="text"
+                  value={editForm.dsReason}
+                  onChange={(e) => setEditForm({ ...editForm, dsReason: e.target.value })}
+                  className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">📅 Data do Ocorrido: </label>
+                <input
+                  type="date"
+                  value={editForm.dateOcorrido}
+                  onChange={(e) => setEditForm({ ...editForm, dateOcorrido: e.target.value })}
+                  className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">📅 Data do Bólos: </label>
+                <input
+                  type="date"
+                  value={editForm.date}
+                  onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                  className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  required
+                />
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setEditingCake(null)}
+                  className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl transition-colors"
+                >
+                  Salvar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900"></div>
@@ -106,15 +226,15 @@ export default function PendingDebtsList() {
         </div>
 
         <div className="absolute inset-0">
-          {[...Array(10)].map((_, i) => (
+          {particles.map((p, i) => (
             <div
               key={i}
               className="absolute w-1 h-1 bg-blue-400 rounded-full animate-pulse"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
+                left: p.left,
+                top: p.top,
+                animationDelay: p.delay,
+                animationDuration: p.duration,
               }}
             ></div>
           ))}
@@ -203,8 +323,17 @@ export default function PendingDebtsList() {
                   {filteredDebts.map((debt) => (
                     <div
                       key={debt.id}
-                      className="bg-gray-800/50 border backdrop-blur-sm rounded-2xl p-6 border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 w-full"
+                      className="bg-gray-800/50 border backdrop-blur-sm rounded-2xl p-6 border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 w-full relative group/card"
                     >
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => handleEditClick(debt)}
+                        className="absolute top-4 right-4 text-gray-400 hover:text-blue-400 transition-colors z-20 opacity-0 group-hover/card:opacity-100"
+                        title="Editar bólos"
+                      >
+                        ✏️
+                      </button>
+
                       <div className="flex items-center justify-between w-full">
 
                         <div className="space-y-6 w-full">
@@ -215,7 +344,7 @@ export default function PendingDebtsList() {
                               alt={debt.user.name}
                               width={200}
                               height={200}
-                              className="rounded-full flex object-cover border-4 border-gray-700/50 group-hover/debt:border-purple-400 transition-all duration-300"
+                              className="rounded-full object-cover border-4 border-gray-700/50 group-hover/card:border-purple-400 transition-all duration-300 w-[150px] h-[150px]"
                               onError={() =>
                                 toast.error(`Erro ao carregar imagem de ${debt.user.name}`)
                               }
@@ -224,14 +353,19 @@ export default function PendingDebtsList() {
                           <div className="flex items-center space-x-2">
                             <p className="text-gray-300 font-mono">{debt.reason}</p>
                           </div>
+                          {debt.dsReason && (
+                            <div className="flex items-center space-x-2">
+                              <p className="text-gray-300 font-mono">{debt.dsReason}</p>
+                            </div>
+                          )}
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg text-gray-400 ">📅 Data do Ocorrido</span>
+                            <span className="text-lg text-gray-400 ">📅 Data do Ocorrido: </span>
                             <p className="text-gray-400 text-md font-mono">
                               {new Date(debt.dateOcorrido).toLocaleDateString('pt-BR')}
                             </p>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg text-gray-400 ">📅 Data do Bólos</span>
+                            <span className="text-lg text-gray-400 ">📅 Data do Bólos: </span>
                             <p className="text-gray-400 text-md font-mono">
                               {new Date(debt.date).toLocaleDateString('pt-BR')}
                             </p>

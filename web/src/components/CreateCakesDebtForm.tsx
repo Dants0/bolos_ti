@@ -24,11 +24,13 @@ const reasons = [
 export default function CreateCakeDebtForm() {
   const [userId, setUserId] = useState('');
   const [reason, setReason] = useState('');
+  const [dsReason, setDsReason] = useState('');
   const [customReason, setCustomReason] = useState('');
   const [date, setDate] = useState('');
   const [dateOcorrido, setDateOcorrido] = useState('');
   const [passKey, setPassKey] = useState('');
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [particles, setParticles] = useState<Array<{ left: string; top: string; delay: string; duration: string }>>([]);
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -47,6 +49,16 @@ export default function CreateCakeDebtForm() {
       setLoadingComplete(true);
     }, 500);
 
+    // Generate particles on client side only
+    setParticles(
+      [...Array(10)].map(() => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        delay: `${Math.random() * 3}s`,
+        duration: `${2 + Math.random() * 2}s`,
+      }))
+    );
+
     if (usersError) {
       toast.error('Erro ao carregar usuários 😞');
     }
@@ -56,7 +68,7 @@ export default function CreateCakeDebtForm() {
 
   // Mutation for creating a cake debt
   const mutation = useMutation({
-    mutationFn: (data: { userId: number; reason: string; date: string, passKey: string, dateOcorrido: string }) =>
+    mutationFn: (data: { userId: number; reason: string; date: string, passKey: string, dateOcorrido: string, dsReason: string }) =>
       createCakeDebt(data),
     onSuccess: () => {
       toast.success('Bólos registrado! 🎂');
@@ -65,6 +77,7 @@ export default function CreateCakeDebtForm() {
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       setUserId('');
       setReason('');
+      setDsReason('');
       setCustomReason('');
       setDate('');
       setDateOcorrido('');
@@ -92,6 +105,7 @@ export default function CreateCakeDebtForm() {
     mutation.mutate({
       userId: Number(userId),
       reason: finalReason,
+      dsReason,
       date,
       dateOcorrido,
       passKey
@@ -118,15 +132,15 @@ export default function CreateCakeDebtForm() {
         </div>
 
         <div className="absolute inset-0">
-          {[...Array(10)].map((_, i) => (
+          {particles.map((p, i) => (
             <div
               key={i}
               className="absolute w-1 h-1 bg-blue-400 rounded-full animate-pulse"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
+                left: p.left,
+                top: p.top,
+                animationDelay: p.delay,
+                animationDuration: p.duration,
               }}
             ></div>
           ))}
@@ -141,7 +155,7 @@ export default function CreateCakeDebtForm() {
           <div className="flex justify-between items-center bg-gray-800/50 backdrop-blur-xl rounded-2xl p-4 border border-gray-700/50">
             <div className="flex items-center space-x-4">
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-              <Link href="/" className="text-green-400 font-mono text-sm">VOLTAR</Link>
+              <Link href="/cakes" className="text-green-400 font-mono text-sm">VOLTAR</Link>
             </div>
             <div className="text-gray-300 font-mono text-sm">
               | REGISTRE O BÓLOS
@@ -221,6 +235,21 @@ export default function CreateCakeDebtForm() {
                     />
                   </div>
                 )}
+
+                <div className='space-y-2'>
+                  <label htmlFor="dsReason" className="block text-lg font-mono text-gray-300">
+                    📝 Descrição do Bólos
+                  </label>
+                  <input
+                    id="dsReason"
+                    type="text"
+                    value={dsReason}
+                    onChange={(e) => setDsReason(e.target.value)}
+                    className="w-full p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:border-purple-500/50"
+                    placeholder="Descreva o que aconteceu..."
+                    required
+                  />
+                </div>
 
                 <div className="space-y-2">
                   <label htmlFor="dateOcorrido" className="block text-lg font-mono text-gray-300">

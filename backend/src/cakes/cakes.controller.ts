@@ -16,7 +16,7 @@ export class CakesController {
   }
 
   @Post()
-  async create(@Body() body: { userId: number; reason: string; date: Date, passKey: string, dateOcorrido: Date }) {
+  async create(@Body() body: { userId: number; reason: string; date: Date, passKey: string, dateOcorrido: Date, dsReason?: string }) {
 
     if (body.passKey !== '5bb2992b4e4744b6b34cb62ab02ee2203bb2992b4e4744b6b34cb62ab02ee220') {
       throw new UnauthorizedException({
@@ -25,7 +25,7 @@ export class CakesController {
       });
     }
 
-    return this.cakesService.create(body.userId, body.reason, body.date, body.dateOcorrido);
+    return this.cakesService.create(body.userId, body.reason, body.date, body.dateOcorrido, body.dsReason);
   }
 
   @Put(':id/pay')
@@ -58,5 +58,25 @@ export class CakesController {
   @Delete(':id/cake')
   async deleteCake(@Param('id') id: string) {
     return this.cakesService.deleteCake(+id);
+  }
+
+  @Put(':id')
+  async updateCake(
+    @Param('id') id: string,
+    @Body() body: { userId?: number; reason?: string; date?: Date; dateOcorrido?: Date; passKey: string; dsReason?: string }
+  ) {
+    if (body.passKey !== '5bb2992b4e4744b6b34cb62ab02ee2203bb2992b4e4744b6b34cb62ab02ee220') {
+      throw new UnauthorizedException({
+        code: 400,
+        message: 'Senha incorreta'
+      });
+    }
+
+    return this.cakesService.updateCake(+id, body);
+  }
+
+  @Get('/top-paid')
+  async getTopPaidUsers() {
+    return this.cakesService.findTopPaidUsers();
   }
 }

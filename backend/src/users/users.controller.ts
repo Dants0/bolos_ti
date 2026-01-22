@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseInterceptors, UploadedFile, ParseFilePipe, FileTypeValidator } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseInterceptors, UploadedFile, ParseFilePipe, FileTypeValidator, Delete, Param, UnauthorizedException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
@@ -38,5 +38,19 @@ export class UsersController {
         // Salvar apenas o caminho relativo
         const photoPath = photo ? `uploads/${photo.filename}` : undefined;
         return this.usersService.create(body.name, photoPath);
+    }
+
+    @Delete(':id')
+    async delete(
+        @Param('id') id: string,
+        @Body() body: { passKey: string }
+    ) {
+        if (body.passKey !== '5bb2992b4e4744b6b34cb62ab02ee2203bb2992b4e4744b6b34cb62ab02ee220') {
+            throw new UnauthorizedException({
+                code: 400,
+                message: 'Senha incorreta'
+            });
+        }
+        return this.usersService.delete(+id);
     }
 }

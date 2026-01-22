@@ -29,7 +29,7 @@ export const getCakesByUserId = async (userId: number) => {
   return response.data;
 };
 
-export const createCakeDebt = async (data: { userId: number; reason: string; date: string, passKey: string, dateOcorrido: string }) => {
+export const createCakeDebt = async (data: { userId: number; reason: string; date: string, passKey: string, dateOcorrido: string, dsReason?: string }) => {
   const response = await api.post<CakeDebt>('/cakes', data);
   return response.data;
 };
@@ -67,7 +67,7 @@ export const getUsersMaxPaidCakes = async (): Promise<PaidCakeUser | null> => {
 };
 
 export async function deleteCake(id: number): Promise<void> {
-  //192.168.1.192
+  //localhost
   const res = await fetch(`http://192.168.1.192:8080/cakes/${id}/cake`, {
     method: 'DELETE',
   });
@@ -79,3 +79,28 @@ export async function deleteCake(id: number): Promise<void> {
     throw new Error('Erro ao apagar o bólos');
   }
 }
+
+export const updateCake = async (id: number, data: { userId?: number; reason?: string; date?: string; dateOcorrido?: string; passKey: string; dsReason?: string }) => {
+  const response = await api.put<CakeDebt>(`/cakes/${id}`, data);
+  return response.data;
+};
+
+export const deleteUser = async (id: number, passKey: string): Promise<void> => {
+  const response = await api.delete(`/users/${id}`, {
+    data: { passKey }
+  });
+  return response.data;
+};
+
+export interface TopPaidUser {
+  userId: number;
+  name: string;
+  paidCount: number;
+  photo: string;
+}
+
+export const getTopPaidUsers = async (): Promise<TopPaidUser[]> => {
+  const response = await api.get<TopPaidUser[]>('/cakes/top-paid');
+  return response.data;
+};
+

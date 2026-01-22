@@ -12,10 +12,10 @@ export class CakesService {
         private usersService: UsersService,
     ) { }
 
-    async create(userId: number, reason: string, date: Date, dateOcorrido: Date): Promise<CakeDebt> {
+    async create(userId: number, reason: string, date: Date, dateOcorrido: Date, dsReason?: string): Promise<CakeDebt> {
         const user = await this.usersService.findOne(userId)
         if (!user) throw new NotFoundException("Usuário não encontrado")
-        const cakeDebt = this.cakesRepository.create({ user, reason, date, dateOcorrido })
+        const cakeDebt = this.cakesRepository.create({ user, reason, date, dateOcorrido, dsReason })
         return this.cakesRepository.save(cakeDebt)
     }
 
@@ -111,6 +111,54 @@ export class CakesService {
             .groupBy('cake_debt.userId')
             .addGroupBy('user.name')
             .orderBy('status', 'DESC')
+            .getRawMany();
+
+        return result;
+    }
+
+    async updateCake(
+        id: number,
+        updateData: { userId?: number; reason?: string; date?: Date; dateOcorrido?: Date; dsReason?: string }
+    ): Promise<CakeDebt> {
+        const cakeDebt = await this.cakesRepository.findOne({
+            where: { id },
+            relations: ['user']
+        });
+
+        if (!cakeDebt) {
+            throw new NotFoundException('Bólos não encontrado');
+        }
+
+        if (updateData.userId && updateData.userId !== cakeDebt.user.id) {
+            const newUser = await this.usersService.findOne(updateData.userId);
+            if (!newUser) {
+                throw new NotFoundException('Usuário não encontrado');
+            }
+            cakeDebt.user = newUser;
+        }
+
+        if (updateData.reason) cakeDebt.reason = updateData.reason;
+        if (updateData.dsReason) cakeDebt.dsReason = updateData.dsReason;
+        if (updateData.date) cakeDebt.date = updateData.date;
+        if (updateData.dateOcorrido) cakeDebt.dateOcorrido = updateData.dateOcorrido;
+
+        return this.cakesRepository.save(cakeDebt);
+    }
+
+    async findTopPaidUsers(): Promise<{ userId: number; name: string; paidCount: number; photo: string }[]> {
+        const result = await this.cakesRepository
+            .createQueryBuilder('cake_debt')
+            .select('cake_debt.userId', 'userId')
+            .addSelect('user.name', 'name')
+            .addSelect('user.photo', 'photo')
+            .addSelect('COUNT(*)', 'paidCount')
+            .innerJoin('cake_debt.user', 'user')
+            .where('cake_debt.status = :status', { status: 'paid' })
+            .groupBy('cake_debt.userId')
+            .addGroupBy('user.name')
+            .addGroupBy('user.photo')
+            .orderBy('"paidCount"', 'DESC')
+            .limit(3)
             .getRawMany();
 
         return result;

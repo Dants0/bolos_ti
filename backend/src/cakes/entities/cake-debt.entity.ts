@@ -7,11 +7,14 @@ export class CakeDebt{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(()=>User, (user)=> user.cakeDebts)
+    @ManyToOne(()=>User, (user)=> user.cakeDebts, { onDelete: 'CASCADE' })
     user: User;
 
     @Column()
     reason: string;
+
+    @Column({ nullable: true })
+    dsReason: string;
 
     @Column()
     date: Date;
