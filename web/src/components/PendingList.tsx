@@ -133,12 +133,20 @@ export default function PendingDebtsList() {
     });
   };
 
-  // Filter debts based on search query
+  // Filter debts based on search query and date
   const filteredDebts = debts.filter(
-    (debt) =>
-      debt.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      debt.reason.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (debt.dsReason || '').toLowerCase().includes(searchQuery.toLowerCase())
+    (debt) => {
+        const daysPending = Math.floor((new Date().getTime() - new Date(debt.date).getTime()) / (1000 * 60 * 60 * 24));
+        const isFuture = daysPending < 0;
+
+        if (isFuture) return false;
+
+        return (
+            debt.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            debt.reason.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (debt.dsReason || '').toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }
   );
 
   return (
@@ -371,7 +379,7 @@ export default function PendingDebtsList() {
                                   ${isCaloteiro ? 'bg-red-600/80 hover:bg-red-600 text-white' : 'bg-green-600/80 hover:bg-green-600 text-white'}
                                 `}
                               >
-                                {mutation.isPending ? '...' : 'PAGO'}
+                                {mutation.isPending ? '...' : 'MARCAR COMO PAGO'}
                               </button>
                               <button
                                 onClick={() => handleDeleteCake(debt.id)}

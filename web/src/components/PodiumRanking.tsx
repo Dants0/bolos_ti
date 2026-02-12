@@ -56,7 +56,7 @@ export default function PodiumRanking() {
       title: 'MAIORES CALOTEIROS',
       subtitle: 'EMERGÊNCIA FINANCEIRA',
       accent: 'red',
-      label: 'Bólos Pendentes',
+      label: 'Dias de Atraso',
       gradient: 'from-red-400 via-orange-400 to-red-600'
     }
   }[viewMode];

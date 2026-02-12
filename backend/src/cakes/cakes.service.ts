@@ -179,13 +179,15 @@ export class CakesService {
             .select('user.id', 'userId')
             .addSelect('user.name', 'name')
             .addSelect('user.photo', 'photo')
-            .addSelect('COUNT(cake_debt.id)', 'count')
+            // Calculate total days pending: SUM(CURRENT_DATE - date)
+            // We cast to integer to ensure we get a number of days
+            .addSelect('SUM(EXTRACT(DAY FROM (NOW() - cake_debt.date)))', 'total_days')
             .where('cake_debt.status = :status', { status: 'pending' })
-            .andWhere('cake_debt.date <= NOW()')
+            .andWhere('cake_debt.date < NOW()') // Only count past dates
             .groupBy('user.id')
             .addGroupBy('user.name')
             .addGroupBy('user.photo')
-            .orderBy('count', 'DESC')
+            .orderBy('total_days', 'DESC') // Order by the calculated sum
             .limit(limit)
             .getRawMany();
 
@@ -195,7 +197,7 @@ export class CakesService {
             userId: Number(item.userId || item.userid || 0),
             name: item.name,
             photo: item.photo,
-            count: Number(item.count || 0),
+            count: Math.floor(Number(item.total_days || 0)), // Display total days instead of count
             type: 'current' as const
         }));
     }
