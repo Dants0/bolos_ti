@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { listUsers, getCakes, getQtdCakeAsPaid, getUsersMaxPaidCakes, PaidCakeUser } from '@/lib/api';
 
 export default function Home() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [cakes, setCakes] = useState<any[]>([]);
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [qtdBolosPaid, setQtdBolosPaid] = useState<number>(0);
   const [qtdBolosDevidos, setQtdBolosDevidos] = useState<number>(0);
@@ -19,8 +19,9 @@ export default function Home() {
         const users = await listUsers();
         setQtdUsers(users.length);
 
-        const cakes = await getCakes();
-        const pendingCakes = cakes.filter((cake) => cake.status === 'pending');
+        const allCakes = await getCakes();
+        setCakes(allCakes);
+        const pendingCakes = allCakes.filter((cake) => cake.status === 'pending');
         setQtdBolosDevidos(pendingCakes.length);
 
         const paidCakes = await getQtdCakeAsPaid();
@@ -31,26 +32,21 @@ export default function Home() {
     };
     getAllInformations();
 
-    const handleMouseMove = (e: any) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
     const loadingTimer = setTimeout(() => {
       setLoadingComplete(true);
     }, 500);
 
-    window.addEventListener('mousemove', handleMouseMove);
-
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
       clearTimeout(loadingTimer);
     };
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      const paid = await getUsersMaxPaidCakes();
-      setUserBestPaid(paid);
+      try {
+        const paid = await getUsersMaxPaidCakes();
+        setUserBestPaid(paid);
+      } catch (e) { }
     };
     fetchData();
   }, []);
@@ -69,29 +65,58 @@ export default function Home() {
     },
   ];
 
+  // Subtle Integrity Logic
+  const pendingCakes = cakes.filter(c => c.status === 'pending');
+  const oldestPending = [...pendingCakes].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 3);
+
+  const hasCaloteiros = pendingCakes.length > 0;
+  const daysWithoutCalote = 0; // Fixed logic as per instructions: if has caloteiros, it's 0.
+
+  // Emergency Mode Logic: Debts older than 15 days
+  const isEmergency = pendingCakes.some(c => {
+    const days = Math.floor((new Date().getTime() - new Date(c.date).getTime()) / (1000 * 60 * 60 * 24));
+    return days > 15;
+  });
+
+  const terminalLogs = [
+    "Todo bug em produção merece ser celebrado... com bolo! 🎉",
+    ...pendingCakes.filter(c => {
+      const days = Math.floor((new Date().getTime() - new Date(c.date).getTime()) / (1000 * 60 * 60 * 24));
+      return days > 7;
+    }).map(c => `[WARNING] Caloteiro detectado: @${c.user.name} (${Math.floor((new Date().getTime() - new Date(c.date).getTime()) / (1000 * 60 * 60 * 24))} dias)`)
+  ];
+
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gray-900">
+    <div className="min-h-screen relative overflow-hidden transition-colors duration-1000 bg-gray-900">
+      {/* Subtle Emergency Pulse */}
+
+
       <div className="relative z-10 container mx-auto px-6 py-12">
         <div
-          className={`mb-8 transition-all duration-1000 ${
-            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
+          className={`mb-8 transition-all duration-1000 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
         >
           <div className="flex justify-between items-center bg-gray-800/50 backdrop-blur-xl rounded-2xl p-4 border border-gray-700/50">
             <div className="flex items-center space-x-4">
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-green-400 font-mono text-sm">SYSTEM ONLINE</span>
+              <span className="text-green-400 font-mono text-sm uppercase tracking-tighter">System Online</span>
+              <span className="text-blue-400 font-mono text-xs ml-4">
+                DIAS SEM CALOTES: {hasCaloteiros ? '0' : '99'}
+              </span>
             </div>
-            <div className="text-gray-300 font-mono text-sm">| BUILD v1.0.2</div>
+            <div className="text-gray-300 font-mono text-xs opacity-50 space-x-4 flex items-center">
+              <span>SYNC_SUCCESS</span>
+              <span>| BUILD v1.0.2</span>
+            </div>
           </div>
         </div>
 
+        {/* Header Section */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 delay-300 ${
-            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
+          className={`text-center mb-16 transition-all duration-1000 delay-300 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
         >
-          <div className="relative">
+          <div className="relative inline-block">
             <h1 className="text-7xl font-black mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
               BÓLOS.TI
             </h1>
@@ -114,196 +139,145 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Stats Grid */}
         <div
-          className={`grid grid-cols-1 md:grid-cols-1 gap-6 mb-16 transition-all duration-1000 delay-500 ${
-            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
+          className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 transition-all duration-1000 delay-500 ${loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
         >
           {maxPaidsAndPending.map((stat, index) => (
-            <div key={index} className="group relative">
-              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300">
-                <div className="text-3xl mb-2">{stat.icon}</div>
-                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-sm text-gray-400 font-mono">{stat.label}</div>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-purple-600/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
+            <div key={index} className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300">
+              <div className="text-2xl mb-1">{stat.icon}</div>
+              <div className="text-xl font-bold text-white mb-1 truncate">{stat.value}</div>
+              <div className="text-[10px] text-gray-400 font-mono uppercase tracking-widest">{stat.label}</div>
             </div>
+          ))}
+          {stats.map((stat, index) => (
+            <Link key={index} href={stat.link || '#'} className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300">
+              <div className="text-2xl mb-1">{stat.icon}</div>
+              <div className="text-xl font-bold text-white mb-1">{stat.value}</div>
+              <div className="text-[10px] text-gray-400 font-mono uppercase tracking-widest">{stat.label}</div>
+            </Link>
           ))}
         </div>
 
-        <div
-          className={`grid grid-cols-2 md:grid-cols-3 gap-6 mb-16 transition-all duration-1000 delay-500 ${
-            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          {stats.map((stat, index) => {
-            const CardContent = (
-              <>
-                <div className="text-3xl mb-2">{stat.icon}</div>
-                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-sm text-gray-400 font-mono">{stat.label}</div>
-              </>
-            );
-
-            return (
-              <div key={index}>
-                <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 relative group">
-                  {stat.link ? (
-                    <Link href={stat.link} className="cursor-pointer block">
-                      {CardContent}
-                    </Link>
-                  ) : (
-                    CardContent
-                  )}
-                  <div className="bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-purple-600/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="grid md:grid-cols-12 gap-8 mb-16">
+          {/* Main Actions */}
+          <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Link href="/users" className="group bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-blue-500/50 transition-all duration-500 hover:scale-[1.01]">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="text-4xl">👨‍💻</div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Usuários</h3>
+                  <p className="text-blue-400 font-mono text-xs">COLABORADORES_ACTIVE: {qtdUsers}</p>
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        <div
-          className={`grid md:grid-cols-2 gap-8 mb-16 transition-all duration-1000 delay-700 ${
-            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <div className="group relative">
-            <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-blue-500/50 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
-              <div className="absolute inset-0 opacity-5">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: `
-                      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
-                      radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '30px 30px',
-                  }}
-                ></div>
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">Administração central de agentes e manipuladores de código.</p>
+              <div className="inline-flex items-center space-x-2 text-blue-400 font-bold text-xs uppercase tracking-widest">
+                <span>Acessar</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
               </div>
+            </Link>
 
-              <div className="relative z-10">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="text-5xl">👨‍💻</div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white">Gerenciador de Usuário</h3>
-                    <p className="text-blue-400 font-mono text-sm">./users</p>
-                  </div>
+            <Link href="/cakes" className="group bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-purple-500/50 transition-all duration-500 hover:scale-[1.01]">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="text-4xl">🎂</div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Bólos Tracker</h3>
+                  <p className="text-purple-400 font-mono text-xs">PENDING_QUEUE: {qtdBolosDevidos}</p>
                 </div>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">Monitoramento de bombas, gambiarras e débitos técnicos acumulados.</p>
+              <div className="inline-flex items-center space-x-2 text-purple-400 font-bold text-xs uppercase tracking-widest">
+                <span>Acessar</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </Link>
 
-                <p className="text-gray-300 leading-relaxed mb-6">Administre os colaboradores.</p>
-
-                <div className="space-y-2 mb-8">
-                  <div className="flex items-center space-x-3 text-sm text-gray-400">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span>{qtdUsers} colaboradores ativos</span>
-                  </div>
-                  <div className="flex items-center space-x-3 text-sm text-gray-400">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span>2 administradores ativos</span>
-                  </div>
+            {/* Terminal Feed */}
+            <div className="md:col-span-2 bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 font-mono text-xs overflow-hidden h-[200px]">
+              <div className="flex items-center space-x-2 mb-4 border-b border-gray-800 pb-2">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-red-400/50 rounded-full"></div>
+                  <div className="w-2 h-2 bg-yellow-400/50 rounded-full"></div>
+                  <div className="w-2 h-2 bg-green-400/50 rounded-full"></div>
                 </div>
-
-                <Link href="/users">
-                  <div className="group/btn relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 cursor-pointer">
-                    <span className="relative z-10 flex items-center justify-center space-x-2">
-                      <span>ACESSAR</span>
-                      <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                <span className="text-gray-600 text-[9px] uppercase tracking-widest">Live Terminal Feed</span>
+              </div>
+              <div className="space-y-1.5 marquee-vertical">
+                {terminalLogs.map((log, i) => (
+                  <div key={i} className={log.includes('WARNING') ? 'text-red-400' : 'text-green-400/80'}>
+                    <span className="opacity-30">[{new Date().toLocaleTimeString()}]</span> {log}
                   </div>
-                </Link>
+                ))}
+                <div className="flex items-center text-white">
+                  <span className="animate-pulse">_</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="group relative">
-            <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-purple-500/50 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
-              <div className="absolute inset-0 opacity-5">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: `
-                      radial-gradient(circle at 30% 40%, rgba(168, 85, 247, 0.3) 2px, transparent 2px),
-                      radial-gradient(circle at 70% 60%, rgba(168, 85, 247, 0.3) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '25px 25px',
-                  }}
-                ></div>
+          {/* Shadow Rank Area */}
+          <div className="md:col-span-4 space-y-6">
+            <div className="bg-gray-800/40 backdrop-blur-xl border border-red-500/20 rounded-3xl p-6">
+              <div className="flex items-center space-x-3 mb-6 border-b border-red-500/10 pb-4">
+                <span className="text-2xl">💀</span>
+                <div>
+                  <h3 className="text-sm font-black text-red-400 uppercase tracking-tighter">Shadow Rank</h3>
+                  <p className="text-[10px] text-gray-500 font-mono">ZONA_DE_REBAIXAMENTO</p>
+                </div>
               </div>
 
-              <div className="relative z-10">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="text-5xl">🎂</div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white">Bólos Tracker</h3>
-                    <p className="text-purple-400 font-mono text-sm">./cakes</p>
+              <div className="space-y-3">
+                {oldestPending.length > 0 ? oldestPending.map((cake, idx) => (
+                  <div key={idx} className="bg-gray-900/50 border border-gray-700/30 rounded-xl p-3 flex items-center justify-between group hover:border-red-500/30 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-7 h-7 rounded-full bg-red-950/50 flex items-center justify-center text-[10px] font-bold text-red-500">#{idx + 1}</div>
+                      <div>
+                        <div className="text-xs font-bold text-white">@{cake.user.name}</div>
+                        <div className="text-[9px] text-gray-500 uppercase tracking-tighter truncate w-32">{cake.reason}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] font-black text-red-500">{Math.floor((new Date().getTime() - new Date(cake.date).getTime()) / (1000 * 60 * 60 * 24))}d</div>
+                      <div className="text-[8px] text-gray-600 font-mono">STALENESS</div>
+                    </div>
                   </div>
-                </div>
-
-                <p className="text-gray-300 leading-relaxed mb-6">
-                  Sistema de rastreamento de bólos em tempo real, TODA GAMBIARRA SERÁ REGISTRADA!
-                </p>
-
-                <div className="space-y-2 mb-8">
-                  <div className="flex items-center space-x-3 text-sm text-gray-400">
-                    <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                    <span>{qtdBolosDevidos} bolos pendentes</span>
-                  </div>
-                  <div className="flex items-center space-x-3 text-sm text-gray-400">
-                    <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
-                    <span>{qtdBolosPaid} bolos pagos</span>
-                  </div>
-                </div>
-
-                <Link href="/cakes">
-                  <div className="group/btn relative overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 cursor-pointer">
-                    <span className="relative z-10 flex items-center justify-center space-x-2">
-                      <span>ACESSAR</span>
-                      <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-                  </div>
-                </Link>
+                )) : (
+                  <div className="text-center py-8 text-gray-600 text-[10px] font-mono uppercase tracking-widest">Integridade Nominal</div>
+                )}
               </div>
             </div>
-          </div>
-        </div>
 
-        <div
-          className={`transition-all duration-1000 delay-1000 ${
-            loadingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <div className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 font-mono">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-              <span className="text-gray-400 text-sm ml-4">terminal</span>
-            </div>
-            <div className="text-green-400">
-              <span className="text-blue-400">admin@bolos-ti</span>
-              <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~</span>
-              <span className="text-gray-400">$ </span>
-              <span className="text-white">
-                echo "Todo bug em produção merece ser celebrado... com bolo! 🎉"
-              </span>
-            </div>
-            <div className="text-gray-300 mt-2 ml-2">
-              Todo bug em produção merece ser celebrado... com bolo! 🎉
-            </div>
-            <div className="flex items-center mt-4">
-              <span className="text-blue-400">admin@bolos-ti</span>
-              <span className="text-gray-400">:</span>
-              <span className="text-purple-400">~</span>
-              <span className="text-gray-400">$ </span>
-              <span className="animate-pulse text-white">█</span>
+            {/* Subtle QR Code Discreto */}
+            <div className="flex justify-end pr-2 overflow-hidden">
+              <div className="p-2 bg-white/5 border border-gray-700/50 rounded-lg relative overflow-hidden group">
+                <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="text-[8px] text-gray-500 font-mono absolute top-0 left-1 uppercase">HUD_RELAY</div>
+                <img
+                  //src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('http://localhost:3000/cakes/register')}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('http://192.168.1.192:3000/cakes/register')}`}
+                  alt="Register QR"
+                  className="w-20 h-20 opacity-80 grayscale hover:grayscale-0 transition-all"
+                />
+                <div className="mt-1 h-0.5 w-full bg-blue-500/20 relative">
+                  <div className="absolute inset-0 bg-blue-400 animate-scanline" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes scanline {
+          0% { left: -100%; }
+          100% { left: 100%; }
+        }
+        .animate-scanline {
+          width: 30%;
+          animation: scanline 2s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }

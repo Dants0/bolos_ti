@@ -246,6 +246,7 @@ export default function ListPaidCakes({ cakes }: Props) {
                           <div className="relative">
                             <Image
                               src={`http://192.168.1.192:8080/${cake.user.photo}`}
+                              // src={`http://localhost:8080/${cake.user.photo}`}
                               alt={cake.user.name}
                               width={120}
                               height={120}

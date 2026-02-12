@@ -33,23 +33,23 @@ export class CakesController {
     return this.cakesService.markAsPaid(+id);
   }
 
-  @Get('/pay')
+  @Get('pay')
   async findCakesPaid() {
     return this.cakesService.findUsersPaidCakes();
   }
 
-  @Get('/allpay')
+  @Get('allpay')
   async findAllPaidCakes() {
     return this.cakesService.findAllPaidCakes();
   }
 
-  @Get('/max-pending')
+  @Get('max-pending')
   async findCakesMaxPending() {
     const result = await this.cakesService.findUsersMaxPendingCakes();
-    return { data: result }; // Wrap in data for consistency
+    return { data: result };
   }
 
-  @Get('/max-paid')
+  @Get('max-paid')
   async findCakesMaxPaid() {
     const result = await this.cakesService.findUsersMaxPaidCakes();
     return { data: result };
@@ -75,8 +75,13 @@ export class CakesController {
     return this.cakesService.updateCake(+id, body);
   }
 
-  @Get('/top-paid')
+  @Get('top-paid')
   async getTopPaidUsers() {
-    return this.cakesService.findTopPaidUsers();
+    return this.cakesService.findTopUsers('paid', 6);
+  }
+
+  @Get('top-debtors')
+  async getTopDebtors() {
+    return this.cakesService.findTopDebtors(6);
   }
 }

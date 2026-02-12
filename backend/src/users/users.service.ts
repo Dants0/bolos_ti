@@ -35,4 +35,11 @@ export class UsersService {
         await this.usersRepository.remove(user);
     }
 
+    async update(id: number, name?: string, photo?: string): Promise<User> {
+        const user = await this.findOne(id);
+        if (name) user.name = name;
+        if (photo) user.photo = photo;
+        return this.usersRepository.save(user);
+    }
+
 }

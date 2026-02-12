@@ -32,6 +32,7 @@ export class CakesService {
         const cakeDebt = await this.cakesRepository.findOneBy({ id })
         if (!cakeDebt) throw new NotFoundException("Bólos não encontrada");
         cakeDebt.status = 'paid'
+        cakeDebt.paidAt = new Date();
         return this.cakesRepository.save(cakeDebt)
     }
 
@@ -145,23 +146,61 @@ export class CakesService {
         return this.cakesRepository.save(cakeDebt);
     }
 
-    async findTopPaidUsers(): Promise<{ userId: number; name: string; paidCount: number; photo: string }[]> {
+    async findTopUsers(status: 'paid' | 'pending', limit: number = 6): Promise<{ userId: number; name: string; count: number; photo: string }[]> {
         const result = await this.cakesRepository
             .createQueryBuilder('cake_debt')
-            .select('cake_debt.userId', 'userId')
+            .innerJoin('cake_debt.user', 'user')
+            .select('user.id', 'userId')
             .addSelect('user.name', 'name')
             .addSelect('user.photo', 'photo')
-            .addSelect('COUNT(*)', 'paidCount')
-            .innerJoin('cake_debt.user', 'user')
-            .where('cake_debt.status = :status', { status: 'paid' })
-            .groupBy('cake_debt.userId')
+            .addSelect('COUNT(cake_debt.id)', 'count')
+            .where('cake_debt.status = :status', { status })
+            .groupBy('user.id')
             .addGroupBy('user.name')
             .addGroupBy('user.photo')
-            .orderBy('"paidCount"', 'DESC')
-            .limit(3)
+            .orderBy('count', 'DESC')
+            .limit(limit)
             .getRawMany();
 
-        return result;
+        console.log(`DEBUG: findTopUsers(${status}) raw result:`, result);
+
+        return result.map(item => ({
+            userId: Number(item.userId || item.userid || item.user_id || 0),
+            name: item.name,
+            photo: item.photo,
+            count: Number(item.count || 0)
+        }));
     }
 
+    async findTopDebtors(limit: number = 6): Promise<{ userId: number; name: string; count: number; photo: string; type: 'current' }[]> {
+        const result = await this.cakesRepository
+            .createQueryBuilder('cake_debt')
+            .innerJoin('cake_debt.user', 'user')
+            .select('user.id', 'userId')
+            .addSelect('user.name', 'name')
+            .addSelect('user.photo', 'photo')
+            .addSelect('COUNT(cake_debt.id)', 'count')
+            .where('cake_debt.status = :status', { status: 'pending' })
+            .andWhere('cake_debt.date <= NOW()')
+            .groupBy('user.id')
+            .addGroupBy('user.name')
+            .addGroupBy('user.photo')
+            .orderBy('count', 'DESC')
+            .limit(limit)
+            .getRawMany();
+
+        console.log('DEBUG findTopDebtors raw:', result);
+
+        return result.map(item => ({
+            userId: Number(item.userId || item.userid || 0),
+            name: item.name,
+            photo: item.photo,
+            count: Number(item.count || 0),
+            type: 'current' as const
+        }));
+    }
+
+    async findTopPaidUsers(): Promise<{ userId: number; name: string; count: number; photo: string }[]> {
+        return this.findTopUsers('paid', 6);
+    }
 }

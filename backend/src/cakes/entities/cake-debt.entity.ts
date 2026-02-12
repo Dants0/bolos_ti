@@ -3,11 +3,11 @@ import { User } from "src/users/entities/user.entity";
 
 
 @Entity()
-export class CakeDebt{
+export class CakeDebt {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(()=>User, (user)=> user.cakeDebts, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, (user) => user.cakeDebts, { onDelete: 'CASCADE' })
     user: User;
 
     @Column()
@@ -22,7 +22,9 @@ export class CakeDebt{
     @Column()
     dateOcorrido: Date;
 
-    @Column({default: 'pending'})
+    @Column({ default: 'pending' })
     status: 'pending' | 'paid';
 
+    @Column({ nullable: true })
+    paidAt: Date;
 }

@@ -13,6 +13,7 @@ async function bootstrap() {
     // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     // allowedHeaders: 'Content-Type, Accept',
   })
+  console.log('DEBUG: Server starting on port', process.env.PORT ?? 8080);
   await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();

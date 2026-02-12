@@ -9,7 +9,7 @@ import { CakesModule } from './cakes/cakes.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres', // Tipo do banco
-      // host: 'localhost', // Ou o host do seu serviço (ex.: 'db.supabase.co')
+      //host: 'localhost', // Ou o host do seu serviço (ex.: 'db.supabase.co')
       host: '192.168.1.192', // Ou o host do seu serviço (ex.: 'db.supabase.co')
       port: 5432, // Porta padrão do PostgreSQL
       username: 'admin', // Seu usuário
@@ -24,4 +24,8 @@ import { CakesModule } from './cakes/cakes.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    console.log('DEBUG: AppModule initialized');
+  }
+}

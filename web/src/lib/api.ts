@@ -4,7 +4,7 @@ import { CakeDebt } from '../types/cakes';
 
 const api = axios.create({
   baseURL: 'http://192.168.1.192:8080',
-  // baseURL: 'http://localhost:8080',
+  //baseURL: 'http://localhost:8080',
 });
 
 export const createUser = async (data: { name: string }) => {
@@ -92,15 +92,33 @@ export const deleteUser = async (id: number, passKey: string): Promise<void> => 
   return response.data;
 };
 
-export interface TopPaidUser {
+export interface TopUser {
   userId: number;
   name: string;
-  paidCount: number;
+  count: number;
   photo: string;
+  type: 'current' | 'historical';
 }
 
-export const getTopPaidUsers = async (): Promise<TopPaidUser[]> => {
-  const response = await api.get<TopPaidUser[]>('/cakes/top-paid');
+export const getTopPaidUsers = async (): Promise<TopUser[]> => {
+  const response = await api.get<TopUser[]>('/cakes/top-paid');
+  return response.data;
+};
+
+export const getTopDebtors = async (): Promise<TopUser[]> => {
+  const response = await api.get<TopUser[]>('/cakes/top-debtors');
+  return response.data;
+};
+
+export const updateUser = async (id: number, data: { name?: string; photo?: File; passKey: string }) => {
+  console.log('API: updateUser called', { id, name: data.name, hasPhoto: !!data.photo });
+  const formData = new FormData();
+  if (data.name) formData.append('name', data.name);
+  if (data.photo) formData.append('photo', data.photo);
+  formData.append('passKey', data.passKey);
+
+  console.log('API: Sending PUT request to', `/users/${id}`);
+  const response = await api.put(`/users/${id}`, formData);
   return response.data;
 };
 

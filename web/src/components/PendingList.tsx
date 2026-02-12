@@ -209,9 +209,11 @@ export default function PendingDebtsList() {
         </div>
       )}
 
+      {/* Background Matrix-like effect */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900"></div>
 
+        {/* Grid pattern */}
         <div className="absolute inset-0 opacity-20">
           <div
             className="absolute inset-0"
@@ -225,6 +227,7 @@ export default function PendingDebtsList() {
           ></div>
         </div>
 
+        {/* Moving particles */}
         <div className="absolute inset-0">
           {particles.map((p, i) => (
             <div
@@ -242,54 +245,30 @@ export default function PendingDebtsList() {
       </div>
 
       <div className="relative z-10 container mx-auto px-6 py-12">
-        {/* Header with system status */}
-        <div
-          className={`mb-8 transition-all duration-1000 opacity-100 translate-y-0
-            }`}
-        >
-          <div className="flex justify-between items-center bg-gray-800/50 backdrop-blur-xl rounded-2xl p-4 border border-gray-700/50">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="🔍 Pesquisar pagador de bólos..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full p-3 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl text-white placeholder-gray-500 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:border-purple-500/50"
-              />
-            </div>
-            <div className="text-gray-300 font-mono text-sm">
-              | BÓLOS PENDENTES
-            </div>
-          </div>
-        </div>
-
         {/* Main Content */}
-        <div
-          className={`group relative transition-all duration-1000 delay-300 'opacity-100 translate-y-0
-            }`}
-        >
-          <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-purple-500/50 transition-all duration-500 overflow-hidden">
+        <div className="group relative transition-all duration-1000 delay-300 opacity-100 translate-y-0">
+          <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 hover:border-blue-500/50 transition-all duration-500 overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-5">
               <div
                 className="absolute inset-0"
                 style={{
                   backgroundImage: `
-                    radial-gradient(circle at 30% 40%, rgba(168, 85, 247, 0.3) 2px, transparent 2px),
-                    radial-gradient(circle at 70% 60%, rgba(168, 85, 247, 0.3) 1px, transparent 1px)
+                    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
+                    radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.3) 1px, transparent 2px)
                   `,
-                  backgroundSize: '25px 25px',
+                  backgroundSize: '30px 30px',
                 }}
               ></div>
             </div>
 
             <div className="relative z-10">
               <div className="flex items-center justify-center space-x-3 mb-8">
-                <div className="h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent flex-1"></div>
+                <div className="h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent flex-1"></div>
                 <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text">
                   ⏳ Bólos Pendentes
                 </h2>
-                <div className="h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent flex-1"></div>
+                <div className="h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent flex-1"></div>
               </div>
 
               {isLoading ? (
@@ -297,155 +276,124 @@ export default function PendingDebtsList() {
                   <p className="text-xl text-gray-300 font-mono">Carregando Bólos...</p>
                 </div>
               ) : filteredDebts.length === 0 ? (
-                <div className="text-center py-12 space-y-4">
-                  {searchQuery ? (
-                    <>
-                      <div className="text-6xl">🤔</div>
-                      <p className="text-xl text-gray-300 font-mono font-semibold">
-                        Nenhum bólos encontrado para "{searchQuery}"
-                      </p>
-                      <p className="text-gray-400 font-mono">Tente outro termo de pesquisa.</p>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-6xl">🎉</div>
-                      <p className="text-xl text-gray-300 font-mono font-semibold">
-                        Parabéns! Nenhum bólos pendente!
-                      </p>
-                      <p className="text-gray-400 font-mono">
-                        A equipe está se comportando... por enquanto! 😄
-                      </p>
-                    </>
-                  )}
+                <div className="text-center py-12">
+                  <div className="text-6xl mb-4">🎉</div>
+                  <p className="text-xl text-gray-300 font-mono">
+                    Nenhum bólos pendente!
+                  </p>
+                  <p className="text-gray-400 mt-2 font-mono">
+                    A equipe está se comportando... por enquanto! 😄
+                  </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-6 space-y-4 pr-2">
-                  {filteredDebts.map((debt) => (
-                    <div
-                      key={debt.id}
-                      className="bg-gray-800/50 border backdrop-blur-sm rounded-2xl p-6 border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 w-full relative group/card"
-                    >
-                      {/* Edit Button */}
-                      <button
-                        onClick={() => handleEditClick(debt)}
-                        className="absolute top-4 right-4 text-gray-400 hover:text-blue-400 transition-colors z-20 opacity-0 group-hover/card:opacity-100"
-                        title="Editar bólos"
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredDebts.map((debt) => {
+                    const daysPending = Math.floor((new Date().getTime() - new Date(debt.date).getTime()) / (1000 * 60 * 60 * 24));
+                    const isCaloteiro = daysPending > 7;
+
+                    return (
+                      <div
+                        key={debt.id}
+                        className={`group relative bg-gray-800/50 rounded-2xl p-6 border transition-all duration-300 
+                          ${isCaloteiro ? 'border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:border-red-500' : 'border-gray-700/50 hover:border-blue-500/50'}
+                        `}
                       >
-                        ✏️
-                      </button>
+                        {/* Caloteiro Badge */}
+                        {isCaloteiro && (
+                          <div className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-md rotate-3 shadow-lg z-30 uppercase animate-pulse">
+                            Caloteiro(a)
+                          </div>
+                        )}
 
-                      <div className="flex items-center justify-between w-full">
+                        <div className="absolute top-4 right-4 flex space-x-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => handleEditClick(debt)}
+                            className="text-gray-400 hover:text-blue-400 transition-colors"
+                            title="Editar bólos"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleDeleteCake(debt.id)}
+                            className="text-gray-400 hover:text-red-400 transition-colors"
+                            title="Apagar bólos"
+                          >
+                            🗑️
+                          </button>
+                        </div>
 
-                        <div className="space-y-6 w-full">
-                          <div className='w-full flex justify-center items-center'>
+                        <div className="flex flex-col items-center text-center">
+                          <div className="relative mb-4">
                             <Image
                               src={`http://192.168.1.192:8080/${debt.user.photo}`}
-                              // src={`http://localhost:8080/${debt.user.photo}`}
                               alt={debt.user.name}
-                              width={200}
-                              height={200}
-                              className="rounded-full object-cover border-4 border-gray-700/50 group-hover/card:border-purple-400 transition-all duration-300 w-[150px] h-[150px]"
+                              width={150}
+                              height={150}
+                              className={`rounded-full object-cover border-4 transition-all duration-300 w-[150px] h-[150px]
+                                ${isCaloteiro ? 'border-red-500/40 group-hover:border-red-500' : 'border-gray-700/50 group-hover:border-blue-400'}
+                              `}
                               onError={() =>
                                 toast.error(`Erro ao carregar imagem de ${debt.user.name}`)
                               }
                             />
                           </div>
-                          <div className="flex items-center space-x-2">
-                            <p className="text-gray-300 font-mono">{debt.reason}</p>
-                          </div>
-                          {debt.dsReason && (
-                            <div className="flex items-center space-x-2">
-                              <p className="text-gray-300 font-mono">{debt.dsReason}</p>
+
+                          <div className="space-y-2 w-full">
+                            <h3 className={`text-xl font-bold font-mono transition-colors
+                              ${isCaloteiro ? 'text-red-400' : 'text-white group-hover:text-blue-400'}
+                            `}>
+                              {debt.user.name}
+                            </h3>
+                            <p className="text-gray-300 font-mono text-sm">{debt.reason}</p>
+                            {debt.dsReason && (
+                              <p className="text-gray-400 font-mono text-xs italic opacity-70">{debt.dsReason}</p>
+                            )}
+
+                            <div className="pt-4 space-y-3 border-t border-gray-700/30 mt-4">
+                              <div className="flex flex-col space-y-2">
+                                <span className="text-sm text-blue-400 font-mono font-bold uppercase tracking-wider">
+                                  📅 Ocorrido: {new Date(debt.dateOcorrido).toLocaleDateString('pt-BR')}
+                                </span>
+                                <span className="text-sm text-purple-400 font-mono font-bold uppercase tracking-wider">
+                                  🎂 Bólos: {new Date(debt.date).toLocaleDateString('pt-BR')}
+                                </span>
+                              </div>
+                              <p className={`text-base font-mono font-bold ${isCaloteiro ? 'text-red-500' : 'text-green-400'}`}>
+                                {daysPending} DIAS PENDENTES
+                              </p>
                             </div>
-                          )}
-                          <div className="flex items-center space-x-2">
-                            <span className="text-lg text-gray-400 ">📅 Data do Ocorrido: </span>
-                            <p className="text-gray-400 text-md font-mono">
-                              {new Date(debt.dateOcorrido).toLocaleDateString('pt-BR')}
-                            </p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-lg text-gray-400 ">📅 Data do Bólos: </span>
-                            <p className="text-gray-400 text-md font-mono">
-                              {new Date(debt.date).toLocaleDateString('pt-BR')}
-                            </p>
+
+                            <div className="flex gap-2 mt-6">
+                              <button
+                                onClick={() => handleMarkAsPaid(debt.id)}
+                                disabled={mutation.isPending}
+                                className={`flex-1 py-2 px-4 rounded-xl font-bold transition-all duration-300 disabled:opacity-50
+                                  ${isCaloteiro ? 'bg-red-600/80 hover:bg-red-600 text-white' : 'bg-green-600/80 hover:bg-green-600 text-white'}
+                                `}
+                              >
+                                {mutation.isPending ? '...' : 'PAGO'}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteCake(debt.id)}
+                                disabled={deleteMutation.isPending}
+                                className="px-4 py-2 bg-gray-700/50 hover:bg-red-600/80 text-white rounded-xl transition-all duration-300 font-bold border border-gray-600/50 hover:border-red-500/50"
+                                title="Apagar registro"
+                              >
+                                {deleteMutation.isPending ? '...' : '🗑️'}
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className='items-end flex justify-end mt-6'>
-                        <button
-                          onClick={() => handleMarkAsPaid(debt.id)}
-                          disabled={mutation.isPending}
-                          className="group/btn relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 cursor-pointer disabled:opacity-50"
-                        >
-                          <span className="relative z-10 flex items-center justify-center space-x-2">
-                            <span>{mutation.isPending ? 'Processando...' : 'Bólos pago!'}</span>
-                            {!mutation.isPending && (
-                              <span className="group-hover/btn:translate-x-1 transition-transform">
-                                →
-                              </span>
-                            )}
-                          </span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-                        </button>
-                        <button
-                          onClick={() => handleDeleteCake(debt.id)}
-                          disabled={deleteMutation.isPending}
-                          className="ml-4 group/btn relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 cursor-pointer disabled:opacity-50"
-                        >
-                          <span className="relative z-10 flex items-center justify-center space-x-2">
-                            <span>{deleteMutation.isPending ? 'Apagando...' : 'Apagar bólos'}</span>
-                            {!deleteMutation.isPending && (
-                              <span className="group-hover/btn:translate-x-1 transition-transform">
-                                🗑️
-                              </span>
-                            )}
-                          </span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-                        </button>
-                      </div>
 
-                      {/* Glow effect on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/5 to-pink-600/0 rounded-2xl opacity-0 group-hover/debt:opacity-100 transition-opacity duration-300"></div>
-                    </div>
-                  ))}
+                        {/* Glow effect on hover */}
+                        <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10
+                          ${isCaloteiro ? 'bg-gradient-to-r from-red-600/0 via-red-600/5 to-red-600/0' : 'bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-purple-600/0'}
+                        `}></div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
-            </div>
-          </div>
-
-
-          {/* Terminal-style feedback */}
-          <div
-            className={`mt-8 transition-all duration-1000 delay-500 opacity-100 translate-y-0
-            }`}
-          >
-            <div className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 font-mono">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                <span className="text-gray-400 text-sm ml-4">terminal</span>
-              </div>
-              <div className="text-green-400">
-                <span className="text-blue-400">admin@bolos-ti</span>
-                <span className="text-gray-400">:</span>
-                <span className="text-purple-400">~/pending-bolos</span>
-                <span className="text-gray-400">$ </span>
-                <span className="text-white">
-                  echo "Acompanhe os bólos pendentes! 🎂"
-                </span>
-              </div>
-              <div className="text-gray-300 mt-2 ml-2">
-                Acompanhe os bólos pendentes! 🎂
-              </div>
-              <div className="flex items-center mt-4">
-                <span className="text-blue-400">admin@bolos-ti</span>
-                <span className="text-gray-400">:</span>
-                <span className="text-purple-400">~/pending-bolos</span>
-                <span className="text-gray-400">$ </span>
-                <span className="animate-pulse text-white">█</span>
-              </div>
             </div>
           </div>
         </div>

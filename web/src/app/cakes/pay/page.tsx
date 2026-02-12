@@ -12,6 +12,7 @@ async function fetchPaidCakes(): Promise<CakeDebt[]> {
     cache: "no-store"
   });
   // const res = await fetch("http://localhost:8080/cakes/allpay", {
+  //   method: 'GET',
   //   cache: "no-store",
   // });
   if (!res.ok) {

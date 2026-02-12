@@ -11,23 +11,21 @@
 }
 
 body {
-  @apply bg-gray-100 text-gray-900;
+  background-color: #111827 !important;
+  /* gray-900 */
+  @apply text-white min-h-screen;
 }
 
 .gradient-primary {
-  background: linear-gradient(
-    135deg,
-    var(--primary-dark) 0%,
-    var(--primary-light) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--primary-dark) 0%,
+      var(--primary-light) 100%);
 }
 
 .gradient-reverse {
-  background: linear-gradient(
-    135deg,
-    var(--primary-light) 0%,
-    var(--primary-dark) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--primary-light) 0%,
+      var(--primary-dark) 100%);
 }
 
 .gradient-success {
@@ -54,10 +52,12 @@ body {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -68,10 +68,12 @@ body {
 }
 
 @keyframes gradient-shift {
+
   0%,
   100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -83,16 +85,20 @@ body {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   25% {
     transform: translateY(-5px) rotate(1deg);
   }
+
   50% {
     transform: translateY(-10px) rotate(0deg);
   }
+
   75% {
     transform: translateY(-5px) rotate(-1deg);
   }
