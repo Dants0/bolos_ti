@@ -252,12 +252,12 @@ export default function Home() {
             <div className="flex justify-end pr-2 overflow-hidden">
               <div className="p-2 bg-white/5 border border-gray-700/50 rounded-lg relative overflow-hidden group">
                 <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="text-[8px] text-gray-500 font-mono absolute top-0 left-1 uppercase">HUD_RELAY</div>
+                <div className="text-[15px] text-gray-500 font-mono absolute top-0 left-1 uppercase">HUD_RELAY</div>
                 <img
                   //src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('http://localhost:3000/cakes/register')}`}
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('http://bolosti.labcmi.org.br:3000/cakes/register')}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent('http://bolosti.labcmi.org.br:3000/cakes/register')}`}
                   alt="Register QR"
-                  className="w-20 h-20 opacity-80 grayscale hover:grayscale-0 transition-all"
+                  className="w-80 h-80 opacity-80 grayscale hover:grayscale-0 transition-all"
                 />
                 <div className="mt-1 h-0.5 w-full bg-blue-500/20 relative">
                   <div className="absolute inset-0 bg-blue-400 animate-scanline" />
