@@ -133,20 +133,12 @@ export default function PendingDebtsList() {
     });
   };
 
-  // Filter debts based on search query and date
+  // Filter debts based on search query
   const filteredDebts = debts.filter(
-    (debt) => {
-        const daysPending = Math.floor((new Date().getTime() - new Date(debt.date).getTime()) / (1000 * 60 * 60 * 24));
-        const isFuture = daysPending < 0;
-
-        if (isFuture) return false;
-
-        return (
-            debt.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            debt.reason.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (debt.dsReason || '').toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }
+    (debt) =>
+      debt.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      debt.reason.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (debt.dsReason || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -366,9 +358,11 @@ export default function PendingDebtsList() {
                                   🎂 Bólos: {new Date(debt.date).toLocaleDateString('pt-BR')}
                                 </span>
                               </div>
-                              <p className={`text-base font-mono font-bold ${isCaloteiro ? 'text-red-500' : 'text-green-400'}`}>
-                                {daysPending} DIAS PENDENTES
-                              </p>
+                              {daysPending > 0 && (
+                                <p className={`text-base font-mono font-bold ${isCaloteiro ? 'text-red-500' : 'text-green-400'}`}>
+                                  {daysPending} DIAS PENDENTES
+                                </p>
+                              )}
                             </div>
 
                             <div className="flex gap-2 mt-6">
