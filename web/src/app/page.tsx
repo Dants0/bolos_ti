@@ -255,7 +255,7 @@ export default function Home() {
                 <div className="text-[8px] text-gray-500 font-mono absolute top-0 left-1 uppercase">HUD_RELAY</div>
                 <img
                   //src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('http://localhost:3000/cakes/register')}`}
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('http://192.168.1.192:3000/cakes/register')}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('http://bolosti.labcmi.org.br:3000/cakes/register')}`}
                   alt="Register QR"
                   className="w-20 h-20 opacity-80 grayscale hover:grayscale-0 transition-all"
                 />
