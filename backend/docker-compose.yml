@@ -27,7 +27,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - uploads_data:/app/uploads
+      - /root/bolos_ti/backend/uploads:/app/uploads
     depends_on:
       - postgres
       - redis
@@ -48,4 +48,3 @@ volumes:
     external: true
     name: backend_postgres_data
   redis_data:
-  uploads_data:
